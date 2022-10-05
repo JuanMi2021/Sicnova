@@ -13,6 +13,7 @@ import { FacturacionComponent } from './components/facturacion/facturacion.compo
 import { ShopComponent } from './components/shop/shop.component';
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
