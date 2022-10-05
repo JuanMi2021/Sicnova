@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from "@angular/forms";
 import { __param } from 'tslib';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import firebaseApp from 'src/app/components/utils/credenciales';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 

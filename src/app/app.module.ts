@@ -10,10 +10,12 @@ import { PedidosComponent } from './components/pedidos/pedidos.component';
 import { DhlComponent } from './components/pedidos/dhl/dhl.component';
 import { CeaceroComponent } from './components/pedidos/ceacero/ceacero.component';
 import { FacturacionComponent } from './components/facturacion/facturacion.component';
-import { ShopComponent } from './components/shop/shop.component';
+
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
+import { SupportComponent } from './components/support/support.component';
+import { ApiComponent } from './components/support/api/api.component';
 
 @NgModule({
   declarations: [
@@ -25,8 +27,9 @@ import { ToastrModule } from 'ngx-toastr';
     DhlComponent,
     CeaceroComponent,
     FacturacionComponent,
-    ShopComponent,
-    NavbarComponent
+    NavbarComponent,
+    SupportComponent,
+    ApiComponent
   ],
   imports: [
     BrowserModule,
