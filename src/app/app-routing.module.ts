@@ -5,6 +5,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CeaceroComponent } from './components/pedidos/ceacero/ceacero.component';
 import { DhlComponent } from './components/pedidos/dhl/dhl.component';
 import { PedidosComponent } from './components/pedidos/pedidos.component';
+import { ApiComponent } from './components/support/api/api.component';
+import { SupportComponent } from './components/support/support.component';
 
 
 const routes: Routes = [
@@ -12,7 +14,9 @@ const routes: Routes = [
   { path: 'dhl', component: DhlComponent },
   { path: 'ceacero', component: CeaceroComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'logistica', component:PedidosComponent}
+  { path: 'logistica', component: PedidosComponent},
+  { path: 'support', component: SupportComponent},
+  { path: 'api', component: ApiComponent}
 
 ];
 
