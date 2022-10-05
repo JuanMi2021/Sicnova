@@ -12,6 +12,7 @@ import { CeaceroComponent } from './components/pedidos/ceacero/ceacero.component
 import { FacturacionComponent } from './components/facturacion/facturacion.component';
 import { ShopComponent } from './components/shop/shop.component';
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,9 @@ import { NavbarComponent } from './components/dashboard/navbar/navbar.component'
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
