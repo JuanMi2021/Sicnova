@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+/* Para en color de fondo del navbar
+ */
+ .bg-corp {
+  background-color: #1341CC !important;
+}
