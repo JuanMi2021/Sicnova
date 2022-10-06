@@ -20,6 +20,7 @@ import { count, toArray } from 'rxjs';
 
 export class ApiComponent implements OnInit {
   //variables Bool
+  toggleCategoria:boolean=false;
   toggleDscrptn:boolean=true;
   toggleDscrptnshrt:boolean=true;
   toggleLst:boolean=false;
