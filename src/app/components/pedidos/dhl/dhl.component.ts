@@ -21,7 +21,7 @@ export class DhlComponent implements OnInit {
 
   aduanas = 10;
   costPallet = 185;
-  extraFuel = 0.34;
+  extraFuel = 0.3275;
   pallet = 0;
   transport = 0;
   fuel = 0;
