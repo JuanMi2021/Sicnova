@@ -83,6 +83,10 @@ export class ApiComponent implements OnInit {
   };
 
   getProductosTienda(){
+    if(this.toggleImport==true){
+      this.toggleImport=!this.toggleImport
+      this.productoIds=[]
+    }
     this.toggleLst=true;
     this.productos=null;
     if(this.tienda==false || this.paginas==0){
@@ -96,6 +100,10 @@ export class ApiComponent implements OnInit {
 
 
   getProductosDistribuidor(){
+    if(this.toggleImport==true){
+      this.toggleImport=!this.toggleImport
+      this.productoIds=[]
+    }
     this.toggleLst=true;
     this.productos=null;
     if(this.distri==false || this.paginas==0){
@@ -109,6 +117,10 @@ export class ApiComponent implements OnInit {
 
 
   getProductosLatam(){
+    if(this.toggleImport==true){
+      this.toggleImport=!this.toggleImport
+      this.productoIds=[]
+    }
     this.toggleLst=true;
     this.productos=null;
     if(this.latam==false || this.paginas==0){
