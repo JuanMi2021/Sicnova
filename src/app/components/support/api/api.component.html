@@ -11,7 +11,7 @@
 
     <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleImport==false">
       <div class="row">
-        <h2 class="col">Producto {{producto["name"]["language"]}} ({{producto["id"]}})</h2>
+        <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm"
         (click)='toggleImport=!toggleImport;updSelected(producto["id"])'>Exportar</button>
@@ -62,7 +62,7 @@
     <!--
       <p [innerHTML]="productos"></p>
   -->
-    <div *ngIf="productos" class="row">
+    <div *ngIf="productos || toggleBuscar" class="row">
       <table class="table">
         <thead>
           <tr>
@@ -79,45 +79,28 @@
         <tbody>
           <tr>
             <td>
-              <input id="idmin" type="text" style="width:4em;" value="" placeholder="min" onChange=""/>
+              <input id="idmin" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
             </td>
             <td>
-              <input id="idmax" type="text" style="width:4em;" value="" placeholder="max" onChange=""/>
+              <input id="idmax" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
             </td>
             <td>
-              <input id="byReference" type="text" value="" onChange=""/>
+              <input id="byReference" type="text" value="" [(ngModel)]="searchRef"/>
             </td>
             <td>
-              <input id="byName" type="text" value="" onChange=""/>
+              <input id="byName" type="text" value="" [(ngModel)]="searchName"/>
             </td>
             <td>
-              <select id="isActive" style="width:4em;">
-                <option value="" selected></option>
-                <option value="1">Si</option>
-                <option value="0">No</option>
+              <select id="isActive" style="width:4em;" [(ngModel)]="searchActive">
+                <option [ngValue]="" selected></option>
+                <option [ngValue]="1">Si</option>
+                <option [ngValue]="'2'">No</option>
               </select>
             </td>
             <td>
-              <div *ngIf="toggleCategoria" class="row">
-                <!--
-                <input type="button" onClick="console.log(document.location.href)" value="Buscar"/>
-                <input type="button" onClick="console.log(document.location.href);var enlace=busqueda();document.location.href=\'&Buscar\'=enlace;" value="Buscar"/>
-                <input type="button" onClick="document.location.href+=\'&\'+busqueda()" value="Buscar"/>
-                <input type="button" onClick="document.location.href=\'?\'" value="Reiniciar"/>
-                -->
-                <input type="button" value="Buscar" class="btn btn-primary col"/>
-                <input type="button" value="Reiniciar" class="btn btn-primary col"/>
-              </div>
-              <div *ngIf="!toggleCategoria">
-                <!--
-                    <input type="button" onClick="console.log(document.location.href);var enlace=busqueda();document.location.href=\'Buscar\'=enlace;console.log(document.location.href)" value="Buscar"/>
-                    <input type="button" onClick="console.log(document.location.href)" value="Buscar"/>
-                    <input type="button" onClick="document.location.href=\'?Buscar=\'+busqueda();" value="Buscar"/>
-                    <input type="button" onClick="document.location.href=\'?\'" value="Reiniciar"/>
-                    <input type="button" onClick="console.log(document.location.href);var enlace=busqueda();document.location.href=\'Buscar\'=enlace;console.log(document.location.href)" value="Buscar"/>
-                -->
-                <input type="button" value="Buscar" class="btn btn-primary"/>
-                <input type="button" value="Reiniciar" class="btn btn-primary"/>
+              <div class="row">
+                <input type="button" value="Buscar" class="btn btn-primary col" (click)="buscarProductos()"/>
+                <input type="button" value="Vaciar" class="btn btn-primary col" (click)="limpiarCampos()"/>
               </div>
             </td>
           </tr>
@@ -126,8 +109,9 @@
     </div>
   <h2 class="mt-3 col-5">Listado de productos</h2>
   <p *ngIf="!productos">Cargando</p>
-  <div *ngIf="productos" class="mt-3 col-7 row">
-    <div class="col">
+    <div *ngIf="productos" class="mt-3 col-7 row">
+      
+      <div *ngIf="!toggleBuscar" class="col text-end">
         <button class="btn btn-primary" *ngIf="pagina>0" (click)="getPrimera()">Primera</button>
         <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;getPagina()">{{pagina-2}}</button>
         <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;getPagina()">{{pagina-1}}</button>
@@ -139,6 +123,20 @@
         <button class="btn btn-primary" *ngIf="pagina+2<paginas"
           (click)="pagina=pagina+2;getPagina()">{{pagina+2}}</button>
         <button class="btn btn-primary" *ngIf="pagina<paginas" (click)="getUltima()">Ultima</button>
+      </div>
+
+      <div *ngIf="toggleBuscar" class="col text-end">
+        <button class="btn btn-primary" *ngIf="pagina>0" (click)="pagina=0">Primera</button>
+        <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;">{{pagina-2}}</button>
+        <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;">{{pagina-1}}</button>
+        <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
+        <label *ngIf="pagina>0 && pagina<UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">{{pagina}}</label>
+        <label *ngIf="pagina==UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">Ultima</label>
+        <button class="btn btn-primary" *ngIf="pagina+1<UltPagBuscar(paginas)"
+          (click)="pagina=pagina+1;">{{pagina+1}}</button>
+        <button class="btn btn-primary" *ngIf="pagina+2<UltPagBuscar(paginas)"
+          (click)="pagina=pagina+2;">{{pagina+2}}</button>
+        <button class="btn btn-primary" *ngIf="pagina<UltPagBuscar(paginas)" (click)="pagina=UltPagBuscar(paginas)">Ultima</button>
       </div>
       <div class="col-1">
         <button class="btn btn-primary" *ngIf="toggleImport"
@@ -162,9 +160,8 @@
           </tr>
       </table> -->
 
-    <table class="table table-hover" *ngIf="productos">
+    <table class="table table-hover" *ngIf="productos && !toggleBuscar">
       <thead>
-
         <tr class="align-middle">
           <th *ngIf="productos" scope="col">ID</th>
           <th *ngIf="productos" scope="col">Nombre</th>
@@ -186,7 +183,31 @@
       </tbody>
     </table>
 
+    <table class="table table-hover" *ngIf="productos && toggleBuscar">
+      <thead>
+        <tr class="align-middle">
+          <th *ngIf="productos" scope="col">ID</th>
+          <th *ngIf="productos" scope="col">Nombre</th>
+          <th *ngIf="productos" scope="col">Referencia</th>
+          <th *ngIf="productos" scope="col" colspan="2"></th>
+          <th *ngIf="productos" scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pr of productos;index as i;" class="align-middle">
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["id"]}}</td>
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["name"]["language"]}}</td>
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["reference"]}}</td>
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+              (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updSelected(pr["id"])' />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
+  <!-- Listado de productos con llamada sin variables, Solo se ejecuta si ocurre algun error en las llamadas -->
   <div class="row" *ngIf="productos && (!producto || toggleLst==true) && esFalso==true">
     <!--
       <p [innerHTML]="productos"></p>
@@ -205,6 +226,8 @@
       </tr>
     </table>
   </div>
+
+
   <div *ngIf="toggleImport">
     <div>
       <h2 *ngIf="tienda">Importando desde Tienda</h2>

@@ -24,9 +24,9 @@ export class CrudService {
     return salida;
   }
 
-  buscarProductos(direccion:string){
+  buscarProductos(direccion:string,filtro:string){
     let salida;
-    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&buscar=`);
+    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&Buscar=${filtro}`);
     return salida;
   }
 

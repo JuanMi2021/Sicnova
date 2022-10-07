@@ -30,6 +30,7 @@ export class ApiComponent implements OnInit {
   distri:boolean=false;
   latam:boolean=false;
   triwee:boolean=false;
+  toggleBuscar:boolean=false;
   //variables Any
   productos:any;
   producto:any;
@@ -41,6 +42,11 @@ export class ApiComponent implements OnInit {
   paginas: number = 0;
   pagina: number = 0;
   //variables string
+  searchActive:string  = "";
+  searchMinId:string  = "";
+  searchMaxId:string  = "";
+  searchRef:string  = "";
+  searchName:string  = "";
   origen:string="";
   destino:string="";
   selectedOpt:string="";
@@ -68,6 +74,7 @@ export class ApiComponent implements OnInit {
       uri="latam"
     }
     this.toggleLst=false;
+    this.toggleBuscar=false;
     if (this.producto==undefined || this.producto["id"]!=iden) {
       this.producto=undefined;
       this.servicio.getProducto(iden,uri).subscribe((resultado)=>{
@@ -88,15 +95,18 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
+    this.toggleBuscar=false
     this.toggleLst=true;
     this.productos=null;
+    this.pagina=0;
+    this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
     if(this.tienda==false || this.paginas==0){
-      this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
       this.tienda=true;
       this.distri=false;
       this.latam=false;
     }
-    this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;});
+    console.log("carga las paginas: " + this.paginas)
+    this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
 
@@ -105,10 +115,12 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
+    this.toggleBuscar=false
     this.toggleLst=true;
     this.productos=null;
+    this.pagina=0;
+    this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
     if(this.distri==false || this.paginas==0){
-      this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
       this.tienda=false;
       this.distri=true;
       this.latam=false;
@@ -122,10 +134,12 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
+    this.toggleBuscar=false
     this.toggleLst=true;
     this.productos=null;
+    this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
+    this.pagina=0;
     if(this.latam==false || this.paginas==0){
-      this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
       this.tienda=false;
       this.distri=false;
       this.latam=true;
@@ -151,43 +165,16 @@ export class ApiComponent implements OnInit {
     if(this.destino==""){
       this.toggleError=true;
     }else{
+      this.toggleBuscar=false
       this.toggleError=false;
       this.servicio.importarProductos(info).subscribe((resultado)=>{console.log(resultado)})
     }
 
-      /*
+    /*
     for (let i = 0; i < ids.length; i++) {
       console.log(ids[i]);
-    }*/
-  }
-
-  getPagina(){
-    if (this.tienda) {
-      this.getProductosTienda();
     }
-    if(this.distri){
-      this.getProductosDistribuidor();
-    }
-    if(this.latam){
-      this.getProductosLatam();
-    }
-  }
-
-  getUltima(){
-    if (this.tienda) {
-      this.pagina=this.paginas
-      this.getProductosTienda();
-    }
-
-    if(this.distri){
-      this.pagina=this.paginas
-      this.getProductosDistribuidor();
-    }
-
-    if(this.latam){
-      this.pagina=this.paginas
-      this.getProductosLatam();
-    }
+    */
   }
 
   updSelected(id:string){
@@ -203,6 +190,37 @@ export class ApiComponent implements OnInit {
       }
     }
     console.log(this.productoIds)
+  }
+
+  getUltima(){
+    console.log("before:" + this.pagina + "/" + this.paginas)
+    if (this.tienda) {
+      this.pagina=this.paginas
+      this.getProductosTienda();
+    }
+
+    if(this.distri){
+      this.pagina=this.paginas
+      this.getProductosDistribuidor();
+    }
+
+    if(this.latam){
+      this.pagina=this.paginas
+      this.getProductosLatam();
+    }
+    console.log("after:" + this.pagina + "/" + this.paginas)
+  }
+
+  getPagina(){
+    if (this.tienda) {
+      this.getProductosTienda();
+    }
+    if(this.distri){
+      this.getProductosDistribuidor();
+    }
+    if(this.latam){
+      this.getProductosLatam();
+    }
   }
 
   getPrimera(){
@@ -222,5 +240,74 @@ export class ApiComponent implements OnInit {
       this.getProductosLatam();
     }
 
+  }
+
+  buscarProductos(){
+    this.toggleBuscar=true;
+    var salida:string="";
+			if(this.searchMinId!="" && this.searchMaxId!=""){
+				if(this.searchMaxId<this.searchMinId || isNaN(parseInt(this.searchMinId)) || isNaN(parseInt(this.searchMaxId))){
+					salida="null";
+				}else{
+					salida+="id:"+this.searchMinId+"|"+this.searchMaxId;
+				}
+			}else{
+				if(this.searchMinId!="" && this.searchMaxId=="" && salida!="null"){
+					salida+="id:"+this.searchMinId+"|";
+				}
+				if(this.searchMinId=="" && this.searchMaxId!="" && salida!="null"){
+					salida+="id:0|"+this.searchMaxId;
+				}
+			}
+			if(salida!="null"){
+				if(this.searchRef!=""){
+					if(salida.length>0)salida+="%";
+				salida+="ref:"+this.searchRef;
+				}
+				if(this.searchName!=""){
+					if(salida.length>0)salida+="%";
+					salida+="name:"+this.searchName;
+				}
+				if(this.searchActive!=""){
+					if(salida.length>0)salida+="%";
+          if (this.searchActive=="2") {
+            salida+="is:0";
+          }else{
+            salida+="is:"+this.searchActive;
+          }
+				}
+			}
+
+      let dir=""
+      if (this.tienda) {
+        dir="tienda"
+      }
+      if (this.distri) {
+        dir="distribuidor"
+      }
+      if (this.latam) {
+        dir="latam"
+      }
+      
+      if(salida=="" || salida=="null"){
+        this.toggleBuscar=false
+        console.log("no hay datos de busqueda");
+      }else{
+        this.productos="";
+        this.pagina=0;
+        this.servicio.buscarProductos(dir,salida).subscribe((resultado)=>{this.productos=resultado;this.paginas=Object.values(resultado).length;console.log(resultado)})
+      }
+  }
+
+  UltPagBuscar(paginas:number){
+    return Math.floor(paginas/100);
+  }
+
+  limpiarCampos(){
+    this.searchMinId=""
+    this.searchMaxId=""
+    this.searchName=""
+    this.searchRef=""
+    this.searchActive=""
   }
 }
