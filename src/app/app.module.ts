@@ -17,6 +17,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { SupportComponent } from './components/support/support.component';
 import { ApiComponent } from './components/support/api/api.component';
+import { AccessComponent } from './components/access/access.component';
+import { LoginComponent } from './components/access/login/login.component';
+
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFireModule } from '@angular/fire/compat';
+import { environment } from 'src/environments/environment';
+
+import { MenuComponent } from './components/access/menu/menu.component';
+import { LogoutComponent } from './components/access/logout/logout.component';
+import { RegistroComponent } from './components/access/registro/registro.component';
+import { EditarComponent } from './components/access/editar/editar.component';
+import { PerfilComponent } from './components/access/perfil/perfil.component';
+import { ServiceAuth } from './services/auth.service';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 @NgModule({
   declarations: [
@@ -30,17 +47,30 @@ import { ApiComponent } from './components/support/api/api.component';
     FacturacionComponent,
     NavbarComponent,
     SupportComponent,
-    ApiComponent
+    ApiComponent,
+    AccessComponent,
+    LoginComponent,
+    MenuComponent,
+    LogoutComponent,
+    PerfilComponent,
+    RegistroComponent,
+    EditarComponent,
+    SpinnerComponent,
+
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
     ToastrModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
-  providers: [],
+  providers: [ ServiceAuth],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

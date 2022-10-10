@@ -1,30 +1,30 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ServiceAuth } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  selector: 'app-menu',
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class MenuComponent implements OnInit {
+
   public logueado : boolean;
   public usuario : any;
-  public nombre : any;
-  constructor(private _service : ServiceAuth) {
-  this.logueado = false;
-
-
+  constructor(private _service : ServiceAuth, private _router : Router) {
+    this.logueado = false;
   }
 
   ngOnInit(): void {
-    this.usuarioLogueado();
+  this.usuarioLogueado();
   }
+
   usuarioLogueado(){
     this._service.getInfoUsuarioLoggeado().subscribe(res=>{
       if(res != null){
         this.logueado = true;
         this.usuario = res;
-        this.nombre = this.usuario.displayName;
+
       }
       else{
         this.logueado = false;
@@ -32,5 +32,12 @@ export class NavbarComponent implements OnInit {
 
     });
   }
+
+logOut():void{
+  this._service.logOut().then(res => {
+    this.logueado = false;
+    this._router.navigate(["/"]);
+  });
 }
 
+}

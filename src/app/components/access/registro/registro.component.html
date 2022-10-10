@@ -1,0 +1,14 @@
+<form #formRegistro="ngForm">
+  <label>Email</label>
+  <input type="email" name="cajamail" #cajamail placeholder="example@example.com" class="form-control">
+  <br/>
+  <label>Contraseña</label>
+  <input type="password" name="cajapassword" #cajapassword placeholder="123456" class="form-control" minlength="6" maxlength="20" pattern="[A-Za-z0-9]{6,20}">
+  <br/>
+  <label>Nombre</label>
+  <input type="text" name="cajanombre" #cajanombre placeholder="Spiderman" class="form-control">
+  <br/>
+  <button class="btn btn-success" (click)="registro()">
+      Registrar
+  </button>
+</form>

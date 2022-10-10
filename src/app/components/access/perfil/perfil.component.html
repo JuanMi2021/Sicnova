@@ -1,0 +1,15 @@
+<div *ngIf="logueado; else cargando">
+  <div class="card" style="width: 18rem;">
+    <img src="{{usuario.photoURL}}" class="card-img-top img-fluid" width="200px" height="200px">
+    <div class="card-body">
+      <h5 class="card-title">USUARIO : {{usuario.displayName}}</h5>
+      <p class="card-text">EMAIL : {{usuario.email}}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #cargando>
+    <div class="container">
+        <img src="./../../../assets/images/perfil.png" style="max-width: 400px; max-height: 600px;">
+    </div>
+</ng-template>
