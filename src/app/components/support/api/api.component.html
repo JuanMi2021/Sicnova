@@ -12,7 +12,8 @@
     <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleImport==false">
       <div class="row">
         <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
-        <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0" (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2" (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm"
         (click)='toggleImport=!toggleImport;updSelected(producto["id"])'>Exportar</button>
       </div>
@@ -59,10 +60,7 @@
     </table>
   </div>
   <div class="row" *ngIf="toggleLst">
-    <!--
-      <p [innerHTML]="productos"></p>
-  -->
-    <div *ngIf="productos || toggleBuscar" class="row">
+    <div *ngIf="productos || toggleBuscar==1" class="row">
       <table class="table">
         <thead>
           <tr>
@@ -107,11 +105,10 @@
         </tbody>
       </table>
     </div>
-  <h2 class="mt-3 col-5">Listado de productos</h2>
-  <p *ngIf="!productos">Cargando</p>
+    <h2 class="mt-3 col-5">Listado de productos</h2>
+    <p *ngIf="!productos">Cargando</p>
     <div *ngIf="productos" class="mt-3 col-7 row">
-      
-      <div *ngIf="!toggleBuscar" class="col text-end">
+      <div *ngIf="toggleBuscar==0" class="col text-end">
         <button class="btn btn-primary" *ngIf="pagina>0" (click)="getPrimera()">Primera</button>
         <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;getPagina()">{{pagina-2}}</button>
         <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;getPagina()">{{pagina-1}}</button>
@@ -125,7 +122,7 @@
         <button class="btn btn-primary" *ngIf="pagina<paginas" (click)="getUltima()">Ultima</button>
       </div>
 
-      <div *ngIf="toggleBuscar" class="col text-end">
+      <div *ngIf="toggleBuscar==1" class="col text-end">
         <button class="btn btn-primary" *ngIf="pagina>0" (click)="pagina=0">Primera</button>
         <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;">{{pagina-2}}</button>
         <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;">{{pagina-1}}</button>
@@ -160,7 +157,7 @@
           </tr>
       </table> -->
 
-    <table class="table table-hover" *ngIf="productos && !toggleBuscar">
+    <table class="table table-hover" *ngIf="productos && toggleBuscar==0">
       <thead>
         <tr class="align-middle">
           <th *ngIf="productos" scope="col">ID</th>
@@ -183,7 +180,7 @@
       </tbody>
     </table>
 
-    <table class="table table-hover" *ngIf="productos && toggleBuscar">
+    <table class="table table-hover" *ngIf="productos && toggleBuscar==1">
       <thead>
         <tr class="align-middle">
           <th *ngIf="productos" scope="col">ID</th>
@@ -245,8 +242,10 @@
     </select>
     <div>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)="imprtrProductos()">Empezar</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm"
-        (click)='toggleImport=!toggleImport;productoIds=[];toggleLst=!toggleLst'>Volver a la lista</button>
+      <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
+      (click)='toggleImport=!toggleImport;productoIds=[];toggleLst=!toggleLst'>Volver a la lista</button>
+      <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
+      (click)='toggleImport=!toggleImport;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1'>Volver a la lista</button>
     </div>
     <label *ngIf="toggleError" class="mt-3 alert alert-warning">No se ha seleccionado destino</label>
   </div>

@@ -30,7 +30,6 @@ export class ApiComponent implements OnInit {
   distri:boolean=false;
   latam:boolean=false;
   triwee:boolean=false;
-  toggleBuscar:boolean=false;
   //variables Any
   productos:any;
   producto:any;
@@ -41,6 +40,7 @@ export class ApiComponent implements OnInit {
   //variables number
   paginas: number = 0;
   pagina: number = 0;
+  toggleBuscar:number=0;
   //variables string
   searchActive:string  = "";
   searchMinId:string  = "";
@@ -74,7 +74,7 @@ export class ApiComponent implements OnInit {
       uri="latam"
     }
     this.toggleLst=false;
-    this.toggleBuscar=false;
+    if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
       this.producto=undefined;
       this.servicio.getProducto(iden,uri).subscribe((resultado)=>{
@@ -95,17 +95,19 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
-    this.toggleBuscar=false
+    if(this.toggleBuscar==1)this.pagina=0;
+    this.toggleBuscar=0
     this.toggleLst=true;
     this.productos=null;
-    this.pagina=0;
     this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
     if(this.tienda==false || this.paginas==0){
       this.tienda=true;
       this.distri=false;
       this.latam=false;
     }
+    console.log("pagina cargando: " + this.pagina)
     console.log("carga las paginas: " + this.paginas)
+    console.log("toggle buscar: " + this.toggleBuscar)
     this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
@@ -115,10 +117,10 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
-    this.toggleBuscar=false
+    if(this.toggleBuscar==1)this.pagina=0;
+    this.toggleBuscar=0
     this.toggleLst=true;
     this.productos=null;
-    this.pagina=0;
     this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
     if(this.distri==false || this.paginas==0){
       this.tienda=false;
@@ -134,11 +136,11 @@ export class ApiComponent implements OnInit {
       this.toggleImport=!this.toggleImport
       this.productoIds=[]
     }
-    this.toggleBuscar=false
+    if(this.toggleBuscar==1)this.pagina=0;
+    this.toggleBuscar=0
     this.toggleLst=true;
     this.productos=null;
     this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
-    this.pagina=0;
     if(this.latam==false || this.paginas==0){
       this.tienda=false;
       this.distri=false;
@@ -165,7 +167,7 @@ export class ApiComponent implements OnInit {
     if(this.destino==""){
       this.toggleError=true;
     }else{
-      this.toggleBuscar=false
+      this.toggleBuscar=0
       this.toggleError=false;
       this.servicio.importarProductos(info).subscribe((resultado)=>{console.log(resultado)})
     }
@@ -243,7 +245,7 @@ export class ApiComponent implements OnInit {
   }
 
   buscarProductos(){
-    this.toggleBuscar=true;
+    this.toggleBuscar=1;
     var salida:string="";
 			if(this.searchMinId!="" && this.searchMaxId!=""){
 				if(this.searchMaxId<this.searchMinId || isNaN(parseInt(this.searchMinId)) || isNaN(parseInt(this.searchMaxId))){
@@ -277,7 +279,6 @@ export class ApiComponent implements OnInit {
           }
 				}
 			}
-
       let dir=""
       if (this.tienda) {
         dir="tienda"
@@ -288,10 +289,9 @@ export class ApiComponent implements OnInit {
       if (this.latam) {
         dir="latam"
       }
-      
       if(salida=="" || salida=="null"){
-        this.toggleBuscar=false
-        console.log("no hay datos de busqueda");
+        console.log("No hay datos de Busqueda");
+        this.toggleBuscar=0;
       }else{
         this.productos="";
         this.pagina=0;
@@ -309,5 +309,18 @@ export class ApiComponent implements OnInit {
     this.searchName=""
     this.searchRef=""
     this.searchActive=""
+    if (this.tienda) {
+      this.getProductosTienda();
+    }
+
+    if(this.distri){
+      this.getProductosDistribuidor();
+    }
+
+    if(this.latam){
+      this.getProductosLatam();
+    }
+    this.pagina=0;
+    this.toggleBuscar=0
   }
 }
