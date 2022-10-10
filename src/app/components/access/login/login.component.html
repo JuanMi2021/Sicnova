@@ -1,24 +1,25 @@
 <div class="wrapper">
   <div *ngIf="!loading" class="body">
-      <img class="logo" src="../../../../assets/images/logo.png" alt="Login">
-      <h1>Login</h1>
-<form #formLogIn="ngForm">
-  <label>Email</label>
-  <input type="email" name="cajamail" #cajamail placeholder="example@example.com" class="form-control">
-  <br/>
-  <label>Contraseña</label>
-  <input type="password" name="cajapassword" #cajapassword placeholder="123456" class="form-control" minlength="6" maxlength="20" pattern="[A-Za-z0-9]{6,20}">
-  <br/>
-  <button class="btn btn-success" (click)="logIn()">
-      Log In
-  </button>
-  <!-- Quitado el registro por Google
+    <img class="logo" src="../../../../assets/images/logo.png" alt="Login">
+    <h1>Login</h1>
+    <form #formLogIn="ngForm">
+      <label>Email</label>
+      <input type="email" name="cajamail" #cajamail placeholder="example@example.com" class="form-control">
+      <br />
+      <label>Contraseña</label>
+      <input type="password" name="cajapassword" #cajapassword placeholder="123456" class="form-control" minlength="6"
+        maxlength="20" pattern="[A-Za-z0-9]{6,20}">
+      <br />
+      <button class="btn btn-success" (click)="logIn()">
+        Log In
+      </button>
+      <!-- Quitado el registro por Google
   <button class="btn btn-danger" (click)="logInGoogle()">
       Log In con Google
   </button> -->
-</form>
-</div>
-<!-- <app-spinner *ngIf="loading"></app-spinner> -->
+    </form>
+  </div>
+  <!-- <app-spinner *ngIf="loading"></app-spinner> -->
 </div>
 
 <!--

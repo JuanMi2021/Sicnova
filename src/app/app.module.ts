@@ -35,6 +35,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,6 +57,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RegistroComponent,
     EditarComponent,
     SpinnerComponent,
+
 
   ],
   imports: [
