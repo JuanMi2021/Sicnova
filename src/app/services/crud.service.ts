@@ -38,7 +38,7 @@ export class CrudService {
     return salida;
   }
 
-  importarProductos(infoImport:any){
+  exportarProductos(infoImport:any){
     return this.http.post(`${this.url}callProducto.php`,JSON.stringify(infoImport));
   }
 

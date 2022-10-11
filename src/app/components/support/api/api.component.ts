@@ -55,23 +55,23 @@ export class ApiComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.esFalso=false
-    console.log("inicio")
+    this.esFalso=false;
+    console.log("inicio");
   };
 
   getUnProducto(iden:string){
-    let uri
+    let uri;
     if (this.tienda) {
-      console.log("Cargando Producto de Tienda")
-      uri="tienda"
+      console.log("Cargando Producto de Tienda");
+      uri="tienda";
     }
     if (this.distri) {
-      console.log("Cargando Producto de Distribuidor")
-      uri="distribuidor"
+      console.log("Cargando Producto de Distribuidor");
+      uri="distribuidor";
     }
     if (this.latam) {
-      console.log("Cargando Producto de Latam")
-      uri="latam"
+      console.log("Cargando Producto de Latam");
+      uri="latam";
     }
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
@@ -92,36 +92,36 @@ export class ApiComponent implements OnInit {
 
   getProductosTienda(){
     if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport
-      this.productoIds=[]
+      this.toggleImport=!this.toggleImport;
+      this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0
+    this.toggleBuscar=0;
     this.toggleLst=true;
     this.productos=null;
-    this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
+    this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
     if(this.tienda==false || this.paginas==0){
       this.tienda=true;
       this.distri=false;
       this.latam=false;
     }
-    console.log("pagina cargando: " + this.pagina)
-    console.log("carga las paginas: " + this.paginas)
-    console.log("toggle buscar: " + this.toggleBuscar)
+    console.log("pagina cargando: " + this.pagina);
+    console.log("carga las paginas: " + this.paginas);
+    console.log("toggle buscar: " + this.toggleBuscar);
     this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
 
   getProductosDistribuidor(){
     if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport
-      this.productoIds=[]
+      this.toggleImport=!this.toggleImport;
+      this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0
+    this.toggleBuscar=0;
     this.toggleLst=true;
     this.productos=null;
-    this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)})
+    this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)});
     if(this.distri==false || this.paginas==0){
       this.tienda=false;
       this.distri=true;
@@ -133,11 +133,11 @@ export class ApiComponent implements OnInit {
 
   getProductosLatam(){
     if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport
-      this.productoIds=[]
+      this.toggleImport=!this.toggleImport;
+      this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0
+    this.toggleBuscar=0;
     this.toggleLst=true;
     this.productos=null;
     this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
@@ -152,24 +152,24 @@ export class ApiComponent implements OnInit {
   imprtrProductos(){
     let info
     if(this.tienda){
-      info={origen:"tienda",destino:this.selectedOpt,Id:this.productoIds}
+      info={origen:"tienda",destino:this.selectedOpt,Id:this.productoIds};
     }
     if(this.distri){
-      info={origen:"distribuidor",destino:this.selectedOpt,Id:this.productoIds}
+      info={origen:"distribuidor",destino:this.selectedOpt,Id:this.productoIds};
     }
     if(this.latam){
-      info={origen:"latam",destino:this.selectedOpt,Id:this.productoIds}
+      info={origen:"latam",destino:this.selectedOpt,Id:this.productoIds};
     }
     if(this.triwee){
-      info={origen:"triwee",destino:this.selectedOpt,Id:this.productoIds}
+      info={origen:"triwee",destino:this.selectedOpt,Id:this.productoIds};
     }
 
     if(this.destino==""){
       this.toggleError=true;
     }else{
-      this.toggleBuscar=0
+      this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.importarProductos(info).subscribe((resultado)=>{console.log(resultado)})
+      this.servicio.exportarProductos(info).subscribe((resultado)=>{console.log(resultado)});
     }
 
     /*
@@ -181,40 +181,40 @@ export class ApiComponent implements OnInit {
 
   updSelected(id:string){
     if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
-      this.productoIds.push(id)
+      this.productoIds.push(id);
       if (this.toggleImport==false) {
-        this.toggleImport=!this.toggleImport
+        this.toggleImport=!this.toggleImport;
       }
     }else{
-      this.productoIds.splice(this.productoIds.indexOf(id),1)
+      this.productoIds.splice(this.productoIds.indexOf(id),1);
       if(this.productoIds.length==0){
-        this.toggleImport=false
+        this.toggleImport=false;
       }
     }
-    console.log(this.productoIds)
+    console.log(this.productoIds);
   }
 
   getUltima(){
-    console.log("before:" + this.pagina + "/" + this.paginas)
-    if (this.tienda) {
-      this.pagina=this.paginas
+    console.log("before:" + this.pagina + "/" + this.paginas);
+    if (this.tienda){
+      this.pagina=this.paginas;
       this.getProductosTienda();
     }
 
     if(this.distri){
-      this.pagina=this.paginas
+      this.pagina=this.paginas;
       this.getProductosDistribuidor();
     }
 
     if(this.latam){
-      this.pagina=this.paginas
+      this.pagina=this.paginas;
       this.getProductosLatam();
     }
-    console.log("after:" + this.pagina + "/" + this.paginas)
+    console.log("after:" + this.pagina + "/" + this.paginas);
   }
 
   getPagina(){
-    if (this.tienda) {
+    if (this.tienda){
       this.getProductosTienda();
     }
     if(this.distri){
@@ -279,15 +279,15 @@ export class ApiComponent implements OnInit {
           }
 				}
 			}
-      let dir=""
+      let dir="";
       if (this.tienda) {
-        dir="tienda"
+        dir="tienda";
       }
       if (this.distri) {
-        dir="distribuidor"
+        dir="distribuidor";
       }
       if (this.latam) {
-        dir="latam"
+        dir="latam";
       }
       if(salida=="" || salida=="null"){
         console.log("No hay datos de Busqueda");
@@ -304,11 +304,11 @@ export class ApiComponent implements OnInit {
   }
 
   limpiarCampos(){
-    this.searchMinId=""
-    this.searchMaxId=""
-    this.searchName=""
-    this.searchRef=""
-    this.searchActive=""
+    this.searchMinId="";
+    this.searchMaxId="";
+    this.searchName="";
+    this.searchRef="";
+    this.searchActive="";
     if (this.tienda) {
       this.getProductosTienda();
     }
@@ -321,6 +321,6 @@ export class ApiComponent implements OnInit {
       this.getProductosLatam();
     }
     this.pagina=0;
-    this.toggleBuscar=0
+    this.toggleBuscar=0;
   }
 }
