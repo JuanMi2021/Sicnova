@@ -24,6 +24,12 @@ export class CrudService {
     return salida;
   }
 
+  buscarProductos(direccion:string,filtro:string){
+    let salida;
+    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&Buscar=${filtro}`);
+    return salida;
+  }
+
   getProductos(direccion:string,pag:number){
     let salida;
     //const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
