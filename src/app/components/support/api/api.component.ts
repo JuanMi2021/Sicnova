@@ -25,7 +25,9 @@ export class ApiComponent implements OnInit {
   toggleDscrptnshrt:boolean=true;
   toggleLst:boolean=false;
   toggleError:boolean=false;
-  toggleImport:boolean=false;
+  toggleExport:boolean=false;
+  toggleExporting:boolean=false;
+  toggleDone:boolean=false;
   tienda:boolean=false;
   distri:boolean=false;
   latam:boolean=false;
@@ -91,8 +93,8 @@ export class ApiComponent implements OnInit {
   };
 
   getProductosTienda(){
-    if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport;
+    if(this.toggleExport==true){
+      this.toggleExport=!this.toggleExport;
       this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
@@ -113,8 +115,8 @@ export class ApiComponent implements OnInit {
 
 
   getProductosDistribuidor(){
-    if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport;
+    if(this.toggleExport==true){
+      this.toggleExport=!this.toggleExport;
       this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
@@ -132,8 +134,8 @@ export class ApiComponent implements OnInit {
 
 
   getProductosLatam(){
-    if(this.toggleImport==true){
-      this.toggleImport=!this.toggleImport;
+    if(this.toggleExport==true){
+      this.toggleExport=!this.toggleExport;
       this.productoIds=[];
     }
     if(this.toggleBuscar==1)this.pagina=0;
@@ -149,7 +151,7 @@ export class ApiComponent implements OnInit {
     this.servicio.getProductos("latam",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
-  imprtrProductos(){
+  exprtrProductos(){
     let info
     if(this.tienda){
       info={origen:"tienda",destino:this.selectedOpt,Id:this.productoIds};
@@ -169,7 +171,7 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.exportarProductos(info).subscribe((resultado)=>{console.log(resultado)});
+      this.servicio.exportarProductos(info).subscribe((resultado)=>{if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
     }
 
     /*
@@ -182,13 +184,13 @@ export class ApiComponent implements OnInit {
   updSelected(id:string){
     if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
       this.productoIds.push(id);
-      if (this.toggleImport==false) {
-        this.toggleImport=!this.toggleImport;
+      if (this.toggleExport==false) {
+        this.toggleExport=!this.toggleExport;
       }
     }else{
       this.productoIds.splice(this.productoIds.indexOf(id),1);
       if(this.productoIds.length==0){
-        this.toggleImport=false;
+        this.toggleExport=false;
       }
     }
     console.log(this.productoIds);
