@@ -1,4 +1,4 @@
-<div class="container w-75">
+<div class="container col-10">
 <!-- Botonera de seleccion de datos -->
     <div class="col-md-12 text-center">
       <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
@@ -10,19 +10,23 @@
     </div>
     
     <!--Detalles del producto seleccionado-->
-    <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false">
-      <div class="row">
-        <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
-        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0" (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
-        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2" (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
+  <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false && toggleMod==false">
+    <div class="row">
+      <h3 class="col">Producto {{producto["name"]["language"]}}</h3>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm"
+        (click)='toggleMod=!toggleMod'>Modificar</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm"
         (click)='toggleExport=!toggleExport;updSelected(producto["id"])'>Exportar</button>
-      </div>
-      <table class="table">
-        <tr>
-          <th>Campo</th>
-          <th>Valor</th>
-        </tr>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
+        (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
+        (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
+    </div>
+    <table class="table">
+      <tr>
+        <th>Campo</th>
+        <th>Valor</th>
+      </tr>
       <tr *ngFor="let c of campos;let i = index">
         <td>{{c}}</td>
         <td *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
@@ -40,23 +44,59 @@
             (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
           <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
         </td>
-        <td *ngIf="c=='name' && vals[i].language!='[object Object]'" [innerHTML]="vals[i].language"></td>
-        <td *ngIf="c=='link_rewrite' && vals[i].language!='[object Object]'" [innerHTML]="vals[i].language"></td>
-        <td *ngIf="c=='meta_title' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
-            [innerHTML]="vals[i].language"></td>
         <td *ngIf="c=='meta_description' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
           [innerHTML]="vals[i].language"></td>
         <td *ngIf="c=='meta_keywords' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
           [innerHTML]="vals[i].language"></td>
         <td *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
-        <td *ngIf="c=='description_short' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
-        <td *ngIf="c=='description' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
-        <td *ngIf="c=='link_rewrite' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
-        <td *ngIf="c=='meta_title' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
-        <td *ngIf="c=='meta_description' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
-        <td *ngIf="c=='meta_keywords' && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
+        <td *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
+        <td *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
         <td *ngIf="vals[i]=='1'">Si</td>
         <td *ngIf="vals[i]=='0'">No</td>
+      </tr>
+    </table>
+  </div>
+  <!-- Modificar el producto seleccionad -->
+  <div class="row mt-3" *ngIf="producto && toggleMod==true">
+    <div class="row">
+      <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;'>Cancelar</button>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);showMygroup()'>Aceptar</button>
+    </div>
+    <table name="tableModifying" class="table">
+      <tr>
+        <th>Campo</th>
+        <th>Valor</th>
+      </tr>
+      <tr *ngFor="let c of campos;let i = index" [formGroup]="myGroup">
+        <td *ngIf="['available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1">{{c}}</td>
+        <!--Campos que no se mostraran-->
+        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]=='[object Object]'">
+          <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+        </td>
+        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]!='[object Object]' && (vals[i]!=='1' || vals[i]!=='0')">
+          <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" class="form-control" formControlName={{c}}/>
+        </td>
+        <!-- Campos que se mostrara -->
+        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short'].indexOf(c) > -1 && vals[i].language==6">
+          <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+        </td>
+        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!=6">
+          <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
+        </td>
+        <td formGroupName="Producto" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
+          <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
+          </textarea>
+        </td>
+        <!-- <td *ngIf="c!='quantity' && (vals[i]=='1' || vals[i]=='0')">
+          <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" />
+          <select id="sel{{c}}" name="{{c}}" style="width:4em;">
+            <option *ngIf="vals[i]=='1'" selected >Si</option>
+            <option *ngIf="vals[i]!='1'">Si</option>
+            <option *ngIf="vals[i]=='0'" selected >No</option>
+            <option *ngIf="vals[i]!='0'">No</option>
+          </select>
+        </td> -->
       </tr>
     </table>
   </div>

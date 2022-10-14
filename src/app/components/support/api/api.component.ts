@@ -21,13 +21,14 @@ import { count, toArray } from 'rxjs';
 export class ApiComponent implements OnInit {
   //variables Bool
   toggleCategoria:boolean=false;
+  toggleDone:boolean=false;
   toggleDscrptn:boolean=true;
   toggleDscrptnshrt:boolean=true;
-  toggleLst:boolean=false;
   toggleError:boolean=false;
   toggleExport:boolean=false;
   toggleExporting:boolean=false;
-  toggleDone:boolean=false;
+  toggleLst:boolean=false;
+  toggleMod:boolean=false;
   tienda:boolean=false;
   distri:boolean=false;
   latam:boolean=false;
@@ -52,6 +53,69 @@ export class ApiComponent implements OnInit {
   origen:string="";
   destino:string="";
   selectedOpt:string="";
+
+  myGroup = new FormGroup({
+    Producto: new FormGroup({
+      name: new FormControl(),
+      reference: new FormControl(),
+      price: new FormControl(),
+      id_category_default	: new FormControl(),
+      new	: new FormControl(),
+      id_default_image	: new FormControl(),
+      id_default_combination	: new FormControl(),
+      id_tax_rules_group	: new FormControl(),
+      type	: new FormControl(),
+      supplier_reference	: new FormControl(),
+      location	: new FormControl(),
+      width	: new FormControl(),
+      height	: new FormControl(),
+      depth	: new FormControl(),
+      weight	: new FormControl(),
+      quantity_discount	: new FormControl(),
+      ean13	: new FormControl(),
+      isbn	: new FormControl(),
+      upc	: new FormControl(),
+      mpn	: new FormControl(),
+      cache_is_pack	: new FormControl(),
+      cache_has_attachments	: new FormControl(),
+      is_virtual	: new FormControl(),
+      state	: new FormControl(),
+      additional_delivery_times: new FormControl(),	
+      delivery_in_stock	: new FormControl(),
+      delivery_out_stock	: new FormControl(),
+      on_sale	: new FormControl(),
+      online_only	: new FormControl(),
+      ecotax	: new FormControl(),
+      minimal_quantity	: new FormControl(),
+      low_stock_threshold	: new FormControl(),
+      low_stock_alert	: new FormControl(),
+      wholesale_price	: new FormControl(),
+      unity	: new FormControl(),
+      unit_price_ratio	: new FormControl(),
+      additional_shipping_cost: new FormControl(),	
+      customizable	: new FormControl(),
+      text_fields	: new FormControl(),
+      uploadable_files	: new FormControl(),
+      active	: new FormControl(),
+      redirect_type	: new FormControl(),
+      id_type_redirected	: new FormControl(),
+      available_for_order	: new FormControl(),
+      available_date	: new FormControl(),
+      show_condition	: new FormControl(),
+      condition	: new FormControl(),
+      show_price	: new FormControl(),
+      indexed	: new FormControl(),
+      visibility	: new FormControl(),
+      advanced_stock_management: new FormControl(),	
+      pack_stock_type	: new FormControl(),
+      meta_description	: new FormControl(),
+      meta_keywords	: new FormControl(),
+      meta_title	: new FormControl(),
+      link_rewrite	: new FormControl(),
+      description	: new FormControl(),
+      description_short: new FormControl()
+    })
+  })
 
   constructor(private servicio:CrudService) {
   }
@@ -80,8 +144,20 @@ export class ApiComponent implements OnInit {
     if (this.producto==undefined || this.producto["id"]!=iden) {
       this.producto=undefined;
       this.servicio.getProducto(iden,uri).subscribe((resultado)=>{
-        this.vals=Object.values(resultado);
+        console.log(resultado)
         this.campos=Object.keys(resultado);
+        this.vals=Object.values(resultado);
+        let controles=this.myGroup.controls.Producto
+        let activo=this.myGroup.controls.Producto.get("active");
+        for (let key in this.campos) {
+          if(this.vals[key]!="[object Object]"){
+            this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
+          }else{
+            if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+              this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+            }
+          }
+        }
         this.producto=resultado;
         window.scroll({
           top: 0,
@@ -91,6 +167,25 @@ export class ApiComponent implements OnInit {
       });
     }
   };
+
+  comprobarModificaciones(){
+    let retorno="";
+    for (let key in this.campos) {
+      if(this.vals[key]!="[object Object]"){
+        if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]){
+          
+        }
+      }else{
+        if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+          this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+        }
+      }
+    }
+  }
+
+  showMygroup(){
+    console.log(this.myGroup);
+  }
 
   getProductosTienda(){
     if(this.toggleExport==true){
