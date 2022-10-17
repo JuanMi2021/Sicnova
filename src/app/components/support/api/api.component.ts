@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CrudService } from '../../../services/crud.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { isIdentifier } from '@angular/compiler';
+import { isIdentifier, Node } from '@angular/compiler';
 import { count, toArray } from 'rxjs';
 
 
@@ -56,6 +56,7 @@ export class ApiComponent implements OnInit {
 
   myGroup = new FormGroup({
     Producto: new FormGroup({
+      id: new FormControl(),
       name: new FormControl(),
       reference: new FormControl(),
       price: new FormControl(),
@@ -121,12 +122,15 @@ export class ApiComponent implements OnInit {
   }
 
   ngOnInit() {
+    let  row= <HTMLElement> document.getElementsByClassName("row")[0];
+    row.style.marginRight="0px";
     this.esFalso=false;
-    console.log("inicio");
   };
 
+  
+
   getUnProducto(iden:string){
-    let uri;
+    let uri = "prueba";
     if (this.tienda) {
       console.log("Cargando Producto de Tienda");
       uri="tienda";
@@ -139,6 +143,7 @@ export class ApiComponent implements OnInit {
       console.log("Cargando Producto de Latam");
       uri="latam";
     }
+
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
@@ -164,28 +169,97 @@ export class ApiComponent implements OnInit {
           left: 0,
           behavior: 'smooth'
         });
+        console.log(this.myGroup.controls.Producto.get("id")?.value)
       });
     }
   };
 
   comprobarModificaciones(){
+    let uri="prueba";
+    
+    if(this.tienda){
+      uri= "tienda";
+    }
+    if(this.distri){
+      uri= "distribuidor"
+    }
+    if(this.latam){
+      uri= "latam"
+    }
+    if(this.triwee){
+      uri= "triwee"
+    }
+
     let retorno="";
     for (let key in this.campos) {
-      if(this.vals[key]!="[object Object]"){
-        if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]){
-          
-        }
-      }else{
-        if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
-          this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+      if(this.myGroup.controls.Producto.get(this.campos[key])!=null){
+        if(this.vals[key]!="[object Object]"){
+          if(this.myGroup.controls.Producto.get(this.campos[key])?.value!=this.vals[key]){
+            this.vals[key]=this.myGroup.controls.Producto.get(this.campos[key])?.value
+          }
+        }else{
+          if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+            if(this.myGroup.controls.Producto.get(this.campos[key])?.value!=this.vals[key]["language"]){
+              this.vals[key]["language"]=this.myGroup.controls.Producto.get(this.campos[key])?.value
+            }
+          }
         }
       }
     }
+    this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{console.log(resultado)})
   }
 
+  cancelarModificaciones(){
+    let retorno="";
+    for (let key in this.campos) {
+      console.log(this.campos[key] + ": ")
+      if(this.myGroup.controls.Producto.get(this.campos[key])!=null){
+        if(this.vals[key]!="[object Object]"){
+          if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]){
+            console.log("iguales")
+          }else{
+            this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
+            console.log("Nuevo valor: "+
+            this.myGroup.controls.Producto.get(this.campos[key])?.value
+            )
+          }
+        }else{
+          if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+            if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]["language"]){
+              console.log("iguales")
+            }else{
+              console.log("Nuevo valor: "+
+              this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"])
+              )
+            }
+          }
+        }
+      }
+    }
+    console.log(this.vals)
+  }
   showMygroup(){
     console.log(this.myGroup);
   }
+
+  getProductosPrueba(){
+    if(this.toggleExport==true){
+      this.toggleExport=!this.toggleExport;
+      this.productoIds=[];
+    }
+    if(this.toggleBuscar==1)this.pagina=0;
+    this.toggleBuscar=0;
+    this.toggleLst=true;
+    this.productos=null;
+    this.servicio.damePaginas("prueba").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
+    this.tienda=false;
+    this.distri=false;
+    this.latam=false;
+    console.log("Pagina cargando: " + this.pagina);
+    console.log("Cargando las paginas: " + this.paginas);
+    console.log("Toggle buscar: " + this.toggleBuscar);
+    this.servicio.getProductos("prueba",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+  };
 
   getProductosTienda(){
     if(this.toggleExport==true){
@@ -202,9 +276,9 @@ export class ApiComponent implements OnInit {
       this.distri=false;
       this.latam=false;
     }
-    console.log("pagina cargando: " + this.pagina);
-    console.log("carga las paginas: " + this.paginas);
-    console.log("toggle buscar: " + this.toggleBuscar);
+    console.log("Pagina cargando: " + this.pagina);
+    console.log("Cargando las paginas: " + this.paginas);
+    console.log("Toggle buscar: " + this.toggleBuscar);
     this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
@@ -276,7 +350,8 @@ export class ApiComponent implements OnInit {
     */
   }
 
-  updSelected(id:string){
+  //Actualiza los Productos seleccionados de la lista
+  updtSelected(id:string){
     if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
       this.productoIds.push(id);
       if (this.toggleExport==false) {

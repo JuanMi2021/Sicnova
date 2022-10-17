@@ -7,6 +7,8 @@
         (click)='getProductosDistribuidor();pagina=0'>Distribuidor</button>
       <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
         (click)='getProductosLatam();pagina=0'>Latam</button>
+      <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+        (click)='getProductosPrueba();pagina=0'>Prueba</button>
     </div>
     
     <!--Detalles del producto seleccionado-->
@@ -16,7 +18,7 @@
       <button class="col-1 btn btn-light btn-outline-primary btn-sm"
         (click)='toggleMod=!toggleMod'>Modificar</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm"
-        (click)='toggleExport=!toggleExport;updSelected(producto["id"])'>Exportar</button>
+        (click)='toggleExport=!toggleExport;updtSelected(producto["id"])'>Exportar</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
         (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
       <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
@@ -30,14 +32,14 @@
       <tr *ngFor="let c of campos;let i = index">
         <td>{{c}}</td>
         <td *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
-        <td *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6)">
-        <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-          (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
-        <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-          (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
-        <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
+        <td *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+          <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+            (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
+          <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+            (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
+          <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
         </td>
-        <td *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6)">
+        <td *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
           <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
             (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
           <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
@@ -49,19 +51,19 @@
         <td *ngIf="c=='meta_keywords' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
           [innerHTML]="vals[i].language"></td>
         <td *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
-        <td *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6)">Vacio</td>
+        <td *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
         <td *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
         <td *ngIf="vals[i]=='1'">Si</td>
         <td *ngIf="vals[i]=='0'">No</td>
       </tr>
     </table>
   </div>
-  <!-- Modificar el producto seleccionad -->
+  <!-- Modificar el producto seleccionado -->
   <div class="row mt-3" *ngIf="producto && toggleMod==true">
     <div class="row">
       <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;'>Cancelar</button>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);showMygroup()'>Aceptar</button>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;cancelarModificaciones()'>Cancelar</button>
+      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);comprobarModificaciones()'>Aceptar</button>
     </div>
     <table name="tableModifying" class="table">
       <tr>
@@ -202,7 +204,7 @@
               <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
               <td class="l-3 align-middle">{{pr["reference"]}}</td>
               <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm" (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-              <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updSelected(pr["id"])'/></td>
+              <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])'/></td>
           </tr>
       </table> -->
 
@@ -224,7 +226,7 @@
           <td class="l-3 align-middle">{{pr["reference"]}}</td>
           <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
               (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-          <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updSelected(pr["id"])' />
+          <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
           </td>
         </tr>
       </tbody>
@@ -247,7 +249,7 @@
           <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["reference"]}}</td>
           <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
               (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updSelected(pr["id"])' />
+          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
           </td>
         </tr>
       </tbody>

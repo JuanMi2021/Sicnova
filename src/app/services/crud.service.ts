@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParamsOptions } from '@angular/common/http';
 import { BehaviorSubject, catchError, count, observable, Observable, retry, throwError } from 'rxjs';
+import { FormGroup } from '@angular/forms';
 // import { Dhli } from './dhli';
 
 @Injectable({
@@ -36,6 +37,11 @@ export class CrudService {
     //salida = this.http.get(`${this.url}callProducto.php`,{headers, responseType:'text' });
     salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&pag=${pag}`);
     return salida;
+  }
+
+  modificarProducto(uri:string,formulario:FormGroup){
+    var info = {origen:uri,id:formulario.getRawValue()["Producto"]["id"],modificar:JSON.stringify(formulario.getRawValue())};
+    return this.http.post(`${this.url}callProducto.php`,JSON.stringify(info));
   }
 
   exportarProductos(infoImport:any){
