@@ -1,17 +1,17 @@
 <div class="container col-10">
 <!-- Botonera de seleccion de datos -->
-    <div class="col-md-12 text-center">
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-        (click)='getProductosTienda();pagina=0'>Tienda</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-        (click)='getProductosDistribuidor();pagina=0'>Distribuidor</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-        (click)='getProductosLatam();pagina=0'>Latam</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-        (click)='getProductosPrueba();pagina=0'>Prueba</button>
-    </div>
+  <div class="col-md-12 text-center">
+    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='getProductosTienda();pagina=0'>Tienda</button>
+    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='getProductosDistribuidor();pagina=0'>Distribuidor</button>
+    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='getProductosLatam();pagina=0'>Latam</button>
+    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='getProductosPrueba();pagina=0'>Prueba</button>
+  </div>
     
-    <!--Detalles del producto seleccionado-->
+  <!--Detalles del producto seleccionado-->
   <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false && toggleMod==false">
     <div class="row">
       <h3 class="col">Producto {{producto["name"]["language"]}}</h3>

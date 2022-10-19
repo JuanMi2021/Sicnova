@@ -29,6 +29,7 @@ export class ApiComponent implements OnInit {
   toggleExporting:boolean=false;
   toggleLst:boolean=false;
   toggleMod:boolean=false;
+  tggleProducto:boolean=false;
   tienda:boolean=false;
   distri:boolean=false;
   latam:boolean=false;
@@ -173,7 +174,6 @@ export class ApiComponent implements OnInit {
   };
 
   comprobarModificaciones(){
-    console.log("ejecucion modificar")
     let uri="prueba";
     let cambiado:boolean = false
     if(this.tienda){
@@ -193,9 +193,7 @@ export class ApiComponent implements OnInit {
     for (let key in this.campos) {
       let controlDato = this.myGroup.controls.Producto.get(this.campos[key])
       if(controlDato!=null){
-        if(this.campos[key]=="description_short"){
-        }
-        if(this.vals[key]!="[object Object]" && controlDato?.value!=this.vals[key] && controlDato?.value!=""){
+        if(this.vals[key]!="[object Object]" && controlDato?.value!=this.vals[key]){
           this.vals[key]=controlDato?.value
           cambiado=true
         }
@@ -216,9 +214,10 @@ export class ApiComponent implements OnInit {
     let pro:any;
     if(cambiado){
       this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{
-        //if(resultado){
+        if(resultado){
+          console.log("Se ha modificado")
           this.getUnProducto(this.myGroup.controls.Producto.get("id")?.value)
-        //}
+        }
       })
     }
   }
