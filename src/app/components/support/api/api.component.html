@@ -25,37 +25,37 @@
         (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
     </div>
     <table class="table">
-      <tr>
-        <th>Campo</th>
-        <th>Valor</th>
-      </tr>
-      <tr *ngFor="let c of campos;let i = index">
-        <td>{{c}}</td>
-        <td *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
-        <td *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
-          <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-            (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
-          <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-            (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
-          <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
-        </td>
-        <td *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
-          <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
-            (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
-          <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
-            (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
-          <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
-        </td>
-        <td *ngIf="c=='meta_description' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
-          [innerHTML]="vals[i].language"></td>
-        <td *ngIf="c=='meta_keywords' && (vals[i].language!='[object Object]' && vals[i].language!=6)"
-          [innerHTML]="vals[i].language"></td>
-        <td *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
-        <td *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
-        <td *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
-        <td *ngIf="vals[i]=='1'">Si</td>
-        <td *ngIf="vals[i]=='0'">No</td>
-      </tr>
+      <thead>
+        <tr>
+          <th scope="col">Campo</th>
+          <th scope="col">Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of campos;let i = index">
+          <td class="l-3" >{{c}}</td>
+          <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
+          <td class="l-3" *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+            <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+              (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
+            <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+              (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
+            <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
+          </td>
+          <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+            <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+              (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
+            <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+              (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
+            <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
+          </td>
+          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
+          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
+          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
+          <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
+          <td class="l-3" *ngIf="vals[i]=='0'">No</td>
+        </tr>
+      </tbody>
     </table>
   </div>
   <!-- Modificar el producto seleccionado -->

@@ -143,18 +143,17 @@ export class ApiComponent implements OnInit {
       console.log("Cargando Producto de Latam");
       uri="latam";
     }
-
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
       this.producto=undefined;
       this.servicio.getProducto(iden,uri).subscribe((resultado)=>{
-        console.log(resultado)
         this.campos=Object.keys(resultado);
         this.vals=Object.values(resultado);
         let controles=this.myGroup.controls.Producto
         let activo=this.myGroup.controls.Producto.get("active");
         for (let key in this.campos) {
+          this.myGroup.controls.Producto.get(this.campos[key])?.setValue("");
           if(this.vals[key]!="[object Object]"){
             this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
           }else{
@@ -169,14 +168,14 @@ export class ApiComponent implements OnInit {
           left: 0,
           behavior: 'smooth'
         });
-        console.log(this.myGroup.controls.Producto.get("id")?.value)
       });
     }
   };
 
   comprobarModificaciones(){
+    console.log("ejecucion modificar")
     let uri="prueba";
-    
+    let cambiado:boolean = false
     if(this.tienda){
       uri= "tienda";
     }
@@ -192,36 +191,46 @@ export class ApiComponent implements OnInit {
 
     let retorno="";
     for (let key in this.campos) {
-      if(this.myGroup.controls.Producto.get(this.campos[key])!=null){
-        if(this.vals[key]!="[object Object]"){
-          if(this.myGroup.controls.Producto.get(this.campos[key])?.value!=this.vals[key]){
-            this.vals[key]=this.myGroup.controls.Producto.get(this.campos[key])?.value
+      let controlDato = this.myGroup.controls.Producto.get(this.campos[key])
+      if(controlDato!=null){
+        if(this.campos[key]=="description_short"){
+        }
+        if(this.vals[key]!="[object Object]" && controlDato?.value!=this.vals[key] && controlDato?.value!=""){
+          this.vals[key]=controlDato?.value
+          cambiado=true
+        }
+        if(this.vals[key]["language"]!=null && controlDato?.value!=this.vals[key]["language"]){
+          if(this.vals[key]["language"]!="[object Object]"){
+            this.vals[key]["language"]=controlDato?.value
+            cambiado=true
           }
-        }else{
-          if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
-            if(this.myGroup.controls.Producto.get(this.campos[key])?.value!=this.vals[key]["language"]){
-              this.vals[key]["language"]=this.myGroup.controls.Producto.get(this.campos[key])?.value
+          if(this.vals[key]["language"]=="[object Object]"){
+            if(controlDato?.value!="" && controlDato?.value!=null && controlDato?.value!="null"){
+              this.vals[key]["language"]=controlDato?.value
+              cambiado=true
             }
           }
         }
       }
     }
-    this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{console.log(resultado)})
+    let pro:any;
+    if(cambiado){
+      this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{
+        //if(resultado){
+          this.getUnProducto(this.myGroup.controls.Producto.get("id")?.value)
+        //}
+      })
+    }
   }
 
   cancelarModificaciones(){
     let retorno="";
     for (let key in this.campos) {
-      console.log(this.campos[key] + ": ")
       if(this.myGroup.controls.Producto.get(this.campos[key])!=null){
         if(this.vals[key]!="[object Object]"){
           if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]){
-            console.log("iguales")
           }else{
             this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
-            console.log("Nuevo valor: "+
-            this.myGroup.controls.Producto.get(this.campos[key])?.value
-            )
           }
         }else{
           if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
@@ -236,7 +245,6 @@ export class ApiComponent implements OnInit {
         }
       }
     }
-    console.log(this.vals)
   }
   showMygroup(){
     console.log(this.myGroup);
@@ -255,9 +263,6 @@ export class ApiComponent implements OnInit {
     this.tienda=false;
     this.distri=false;
     this.latam=false;
-    console.log("Pagina cargando: " + this.pagina);
-    console.log("Cargando las paginas: " + this.paginas);
-    console.log("Toggle buscar: " + this.toggleBuscar);
     this.servicio.getProductos("prueba",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
@@ -276,9 +281,6 @@ export class ApiComponent implements OnInit {
       this.distri=false;
       this.latam=false;
     }
-    console.log("Pagina cargando: " + this.pagina);
-    console.log("Cargando las paginas: " + this.paginas);
-    console.log("Toggle buscar: " + this.toggleBuscar);
     this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
   };
 
@@ -343,11 +345,6 @@ export class ApiComponent implements OnInit {
       this.servicio.exportarProductos(info).subscribe((resultado)=>{if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
     }
 
-    /*
-    for (let i = 0; i < ids.length; i++) {
-      console.log(ids[i]);
-    }
-    */
   }
 
   //Actualiza los Productos seleccionados de la lista
