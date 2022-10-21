@@ -29,18 +29,22 @@ export class ApiComponent implements OnInit {
   toggleExporting:boolean=false;
   toggleLst:boolean=false;
   toggleMod:boolean=false;
-  tggleProducto:boolean=false;
+  toggleProducto:boolean=false;
+  toggleTransporte:boolean=false;
   tienda:boolean=false;
   distri:boolean=false;
   latam:boolean=false;
   triwee:boolean=false;
   //variables Any
   productos:any;
+  transportes:any;
   producto:any;
+  transporte:any;
   campos:any;
   vals:any;
   esFalso:any;
   productoIds:any[]=[];
+  transporteIds:any[]=[];
   //variables number
   paginas: number = 0;
   pagina: number = 0;
@@ -119,6 +123,12 @@ export class ApiComponent implements OnInit {
     })
   })
 
+  Transportistas = new FormGroup({
+    Transporte: new FormGroup({
+    })
+  })
+
+
   constructor(private servicio:CrudService) {
   }
 
@@ -164,6 +174,51 @@ export class ApiComponent implements OnInit {
           }
         }
         this.producto=resultado;
+        window.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  };
+
+
+  getUnTransporte(iden:string){
+    let uri = "prueba";
+    if (this.tienda) {
+      console.log("Cargando Transporte de Tienda");
+      uri="tienda";
+    }
+    if (this.distri) {
+      console.log("Cargando Transporte de Distribuidor");
+      uri="distribuidor";
+    }
+    if (this.latam) {
+      console.log("Cargando Transporte de Latam");
+      uri="latam";
+    }
+    this.toggleLst=false;
+    if(this.toggleBuscar==1)this.toggleBuscar=2;
+    if (this.transporte==undefined || this.transporte["id"]!=iden) {
+      this.transporte=undefined;
+      this.servicio.getTransporte(iden,uri).subscribe((resultado)=>{
+        console.log(resultado);
+        this.campos=Object.keys(resultado);
+        this.vals=Object.values(resultado);
+        let controles=this.Transportistas.controls.Transporte
+        let activo=this.Transportistas.controls.Transporte.get("active");
+        for (let key in this.campos) {
+          this.Transportistas.controls.Transporte.get(this.campos[key])?.setValue("");
+          if(this.vals[key]!="[object Object]"){
+            this.Transportistas.controls.Transporte.get(this.campos[key])?.setValue(this.vals[key]);
+          }else{
+            if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+              this.Transportistas.controls.Transporte.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+            }
+          }
+        }
+        this.transporte=resultado;
         window.scroll({
           top: 0,
           left: 0,
@@ -250,90 +305,171 @@ export class ApiComponent implements OnInit {
   }
 
   getProductosPrueba(){
-    if(this.toggleExport==true){
-      this.toggleExport=!this.toggleExport;
-      this.productoIds=[];
-    }
-    if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0;
-    this.toggleLst=true;
-    this.productos=null;
-    this.servicio.damePaginas("prueba").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
     this.tienda=false;
     this.distri=false;
     this.latam=false;
-    this.servicio.getProductos("prueba",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("prueba").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
+      this.servicio.getProductos("prueba",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
+  };
+
+  getTransportesPrueba(){
+    this.tienda=false;
+    this.distri=false;
+    this.latam=false;
+    if(this.toggleExport==true){
+      this.toggleExport=!this.toggleExport;
+      this.transporteIds=[];
+    }
+    if(this.toggleTransporte){
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("prueba").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
   };
 
   getProductosTienda(){
-    if(this.toggleExport==true){
-      this.toggleExport=!this.toggleExport;
-      this.productoIds=[];
-    }
-    if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0;
-    this.toggleLst=true;
-    this.productos=null;
-    this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
     if(this.tienda==false || this.paginas==0){
       this.tienda=true;
       this.distri=false;
       this.latam=false;
     }
-    this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
+      this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
   };
 
+  getTransportesTienda(){
+    if(this.tienda==false || this.paginas==0){
+      this.tienda=true;
+      this.distri=false;
+      this.latam=false;
+    }
+    if(this.toggleTransporte){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+      this.transporteIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("tienda").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
+  };
 
   getProductosDistribuidor(){
-    if(this.toggleExport==true){
-      this.toggleExport=!this.toggleExport;
-      this.productoIds=[];
-    }
-    if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0;
-    this.toggleLst=true;
-    this.productos=null;
-    this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)});
     if(this.distri==false || this.paginas==0){
       this.tienda=false;
       this.distri=true;
       this.latam=false;
     }
-    this.servicio.getProductos("distribuidor",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)});
+      this.servicio.getProductos("distribuidor",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
+  };
+
+  getTransportesDistribuidor(){
+    if(this.distri==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=true;
+      this.latam=false;
+    }
+    if(this.toggleTransporte){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.transporteIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("distribuidor").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
   };
 
 
   getProductosLatam(){
-    if(this.toggleExport==true){
-      this.toggleExport=!this.toggleExport;
-      this.productoIds=[];
-    }
-    if(this.toggleBuscar==1)this.pagina=0;
-    this.toggleBuscar=0;
-    this.toggleLst=true;
-    this.productos=null;
-    this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
     if(this.latam==false || this.paginas==0){
       this.tienda=false;
       this.distri=false;
       this.latam=true;
     }
-    this.servicio.getProductos("latam",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
+      this.servicio.getProductos("latam",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
+  };
+
+  getTransportesLatam(){
+    if(this.latam==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=false;
+      this.latam=true;
+    }
+    if(this.toggleTransporte){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.transporteIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("latam").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
   };
 
   exprtrProductos(){
     let info
     if(this.tienda){
-      info={origen:"tienda",destino:this.selectedOpt,Id:this.productoIds};
+      info={origen:"tienda",destino:this.selectedOpt,Producto:this.productoIds};
     }
     if(this.distri){
-      info={origen:"distribuidor",destino:this.selectedOpt,Id:this.productoIds};
+      info={origen:"distribuidor",destino:this.selectedOpt,Producto:this.productoIds};
     }
     if(this.latam){
-      info={origen:"latam",destino:this.selectedOpt,Id:this.productoIds};
+      info={origen:"latam",destino:this.selectedOpt,Producto:this.productoIds};
     }
     if(this.triwee){
-      info={origen:"triwee",destino:this.selectedOpt,Id:this.productoIds};
+      info={origen:"triwee",destino:this.selectedOpt,Producto:this.productoIds};
     }
 
     if(this.destino==""){
@@ -346,20 +482,61 @@ export class ApiComponent implements OnInit {
 
   }
 
+  exprtrTransportes(){
+    let info
+    if(this.tienda){
+      info={origen:"tienda",destino:this.selectedOpt,Transporte:this.transporteIds};
+    }
+    if(this.distri){
+      info={origen:"distribuidor",destino:this.selectedOpt,Transporte:this.transporteIds};
+    }
+    if(this.latam){
+      info={origen:"latam",destino:this.selectedOpt,Transporte:this.transporteIds};
+    }
+    if(this.triwee){
+      info={origen:"triwee",destino:this.selectedOpt,Transporte:this.transporteIds};
+    }
+
+    if(this.destino==""){
+      this.toggleError=true;
+    }else{
+      this.toggleBuscar=0;
+      this.toggleError=false;
+      this.servicio.exportarTransportes(info).subscribe((resultado)=>{if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
+    }
+
+  }
+
   //Actualiza los Productos seleccionados de la lista
   updtSelected(id:string){
-    if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
-      this.productoIds.push(id);
-      if (this.toggleExport==false) {
-        this.toggleExport=!this.toggleExport;
+    if(this.toggleProducto){
+      if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
+        this.productoIds.push(id);
+        if (this.toggleExport==false) {
+          this.toggleExport=!this.toggleExport;
+        }
+      }else{
+        this.productoIds.splice(this.productoIds.indexOf(id),1);
+        if(this.productoIds.length==0){
+          this.toggleExport=false;
+        }
       }
-    }else{
-      this.productoIds.splice(this.productoIds.indexOf(id),1);
-      if(this.productoIds.length==0){
-        this.toggleExport=false;
-      }
+      console.log(this.productoIds);
     }
-    console.log(this.productoIds);
+    if(this.toggleTransporte){
+      if (this.transporteIds.length==0 || this.transporteIds.indexOf(id)==-1) {
+        this.transporteIds.push(id);
+        if (this.toggleExport==false) {
+          this.toggleExport=!this.toggleExport;
+        }
+      }else{
+        this.transporteIds.splice(this.transporteIds.indexOf(id),1);
+        if(this.transporteIds.length==0){
+          this.toggleExport=false;
+        }
+      }
+      console.log(this.transporteIds);
+    }
   }
 
   getUltima(){

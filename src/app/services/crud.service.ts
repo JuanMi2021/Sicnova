@@ -16,41 +16,56 @@ export class CrudService {
   constructor(private http: HttpClient) { }
 
   getProducto(id:any, uri:any){
-    return this.http.get(`${this.url}callProducto.php?id=${id}&uri=${uri}`);
+    return this.http.get(`${this.url}callTiendas.php?id=${id}&uri=${uri}`);
+  }
+
+  getTransporte(id:any, uri:any){
+    return this.http.get(`${this.url}callTiendas.php?Transporte&id=${id}&uri=${uri}`);
   }
 
   damePaginas(direccion:string){
     let salida;
-    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}`);
+    salida = this.http.get(`${this.url}callTiendas.php?uri=${direccion}`);
     return salida;
   }
 
   buscarProductos(direccion:string,filtro:string){
     let salida;
-    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&Buscar=${filtro}`);
+    salida = this.http.get(`${this.url}callTiendas.php?uri=${direccion}&Buscar=${filtro}`);
     return salida;
   }
 
   getProductos(direccion:string,pag:number){
     let salida;
     //const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
-    //salida = this.http.get(`${this.url}callProducto.php`,{headers, responseType:'text' });
-    salida = this.http.get(`${this.url}callProducto.php?uri=${direccion}&pag=${pag}`);
+    //salida = this.http.get(`${this.url}`,{headers, responseType:'text' });
+    salida = this.http.get(`${this.url}callTiendas.php?uri=${direccion}&pag=${pag}`);
+    return salida;
+  }
+
+  getTransportes(direccion:string){
+    let salida;
+    salida = this.http.get(`${this.url}callTiendas.php?Transporte&uri=${direccion}`);
     return salida;
   }
 
   modificarProducto(uri:string,formulario:FormGroup){
     var info = {origen:uri,id:formulario.getRawValue()["Producto"]["id"],modificar:JSON.stringify(formulario.getRawValue())};
-    return this.http.post(`${this.url}callProducto.php`,JSON.stringify(info));
+    return this.http.post(`${this.url}callTiendas.php`,JSON.stringify(info));
   }
 
   exportarProductos(infoImport:any){
-    return this.http.post(`${this.url}callProducto.php`,JSON.stringify(infoImport));
+    return this.http.post(`${this.url}callTiendas.php`,JSON.stringify(infoImport));
   }
 
-  alta(articulo:any) {
-    return this.http.post(`${this.url}test.php`, JSON.stringify(articulo));
+  
+  exportarTransportes(infoImport:any){
+    return this.http.post(`${this.url}callTiendas.php`,JSON.stringify(infoImport));
   }
+
+  // alta(articulo:any) {
+  //   return this.http.post(`${this.url}test.php`, JSON.stringify(articulo));
+  // }
 
   // baja(codigo:number) {
   //   return this.http.get(`${this.url}baja.php?codigo=${codigo}`);

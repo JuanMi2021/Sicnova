@@ -2,304 +2,600 @@
 <!-- Botonera de seleccion de datos -->
   <div class="col-md-12 text-center">
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-      (click)='getProductosTienda();pagina=0'>Tienda</button>
+      (click)='getProductosTienda();getTransportesTienda();pagina=0'>Tienda</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-      (click)='getProductosDistribuidor();pagina=0'>Distribuidor</button>
+      (click)='getProductosDistribuidor();getTransportesDistribuidor();pagina=0'>Distribuidor</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-      (click)='getProductosLatam();pagina=0'>Latam</button>
+      (click)='getProductosLatam();getTransportesLatam();pagina=0'>Latam</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-      (click)='getProductosPrueba();pagina=0'>Prueba</button>
+      (click)='getProductosPrueba();getTransportesPrueba();pagina=0'>Prueba</button>
   </div>
-    
-  <!--Detalles del producto seleccionado-->
-  <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false && toggleMod==false">
-    <div class="row">
-      <h3 class="col">Producto {{producto["name"]["language"]}}</h3>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm"
-        (click)='toggleMod=!toggleMod'>Modificar</button>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm"
-        (click)='toggleExport=!toggleExport;updtSelected(producto["id"])'>Exportar</button>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
-        (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
-        (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
-    </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Campo</th>
-          <th scope="col">Valor</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let c of campos;let i = index">
-          <td class="l-3" >{{c}}</td>
-          <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
-          <td class="l-3" *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
-            <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-              (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
-            <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
-              (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
-            <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
-          </td>
-          <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
-            <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
-              (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
-            <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
-              (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
-            <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
-          </td>
-          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
-          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
-          <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
-          <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
-          <td class="l-3" *ngIf="vals[i]=='0'">No</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- Modificar el producto seleccionado -->
-  <div class="row mt-3" *ngIf="producto && toggleMod==true">
-    <div class="row">
-      <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;cancelarModificaciones()'>Cancelar</button>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);comprobarModificaciones()'>Aceptar</button>
-    </div>
-    <table name="tableModifying" class="table">
-      <tr>
-        <th>Campo</th>
-        <th>Valor</th>
-      </tr>
-      <tr *ngFor="let c of campos;let i = index" [formGroup]="myGroup">
-        <td *ngIf="['available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1">{{c}}</td>
-        <!--Campos que no se mostraran-->
-        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]=='[object Object]'">
-          <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
-        </td>
-        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]!='[object Object]' && (vals[i]!=='1' || vals[i]!=='0')">
-          <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" class="form-control" formControlName={{c}}/>
-        </td>
-        <!-- Campos que se mostrara -->
-        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short'].indexOf(c) > -1 && vals[i].language==6">
-          <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
-        </td>
-        <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!=6">
-          <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
-        </td>
-        <td formGroupName="Producto" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
-          <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
-          </textarea>
-        </td>
-        <!-- <td *ngIf="c!='quantity' && (vals[i]=='1' || vals[i]=='0')">
-          <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" />
-          <select id="sel{{c}}" name="{{c}}" style="width:4em;">
-            <option *ngIf="vals[i]=='1'" selected >Si</option>
-            <option *ngIf="vals[i]!='1'">Si</option>
-            <option *ngIf="vals[i]=='0'" selected >No</option>
-            <option *ngIf="vals[i]!='0'">No</option>
-          </select>
-        </td> -->
-      </tr>
-    </table>
+
+  <div *ngIf="this.tienda || this.distri || this.latam" class="col-md-12 text-center">
+    <button *ngIf="tienda" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosTienda()'>Productos</button>
+    <button *ngIf="distri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosDistribuidor()'>Productos</button>
+    <button *ngIf="latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosLatam()'>Productos</button>
+    <button *ngIf="!tienda && !distri && !latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosPrueba()'>Productos</button>
+
+    <button *ngIf="tienda" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=false;toggleTransporte=true;getTransportesTienda()'>Transportes</button>
+    <button *ngIf="distri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=false;toggleTransporte=true;getTransportesDistribuidor()'>Transportes</button>
+    <button *ngIf="latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=false;toggleTransporte=true;getTransportesLatam()'>Transportes</button>
+    <button *ngIf="!tienda && !distri && !latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='toggleProducto=false;toggleTransporte=true;getTransportesPrueba()'>Transportes</button>
   </div>
   
-  <!-- Listado -->
-  <div class="row" *ngIf="toggleLst">
-    <!--Barra de busqueda-->
-    <div *ngIf="productos || toggleBuscar==1" class="row">
+    
+  <div *ngIf="toggleProducto">
+    <!--Detalles del producto seleccionado-->
+    <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false && toggleMod==false">
+      <div class="row">
+        <h3 class="col">Producto {{producto["name"]["language"]}}</h3>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm"
+          (click)='toggleMod=!toggleMod'>Modificar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm"
+          (click)='toggleExport=!toggleExport;updtSelected(producto["id"])'>Exportar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
+          (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
+          (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
+      </div>
       <table class="table">
         <thead>
           <tr>
-            <th colspan="4">Busqueda de Productos: </th>
-          </tr>
-          <tr>
-            <th colspan=2>ID: </th>
-            <th>Referencia: </th>
-            <th>Nombre: </th>
-            <th>Activo: </th>
-            <th colspan="2"></th>
+            <th scope="col">Campo</th>
+            <th scope="col">Valor</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              <input id="idmin" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
+          <tr *ngFor="let c of campos;let i = index">
+            <td class="l-3" >{{c}}</td>
+            <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
+            <td class="l-3" *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+              <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
+              <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
+              <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
             </td>
-            <td>
-              <input id="idmax" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
+            <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+              <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
+              <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
+              <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
             </td>
-            <td>
-              <input id="byReference" type="text" value="" [(ngModel)]="searchRef"/>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
+            <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
+            <td class="l-3" *ngIf="vals[i]=='0'">No</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Modificar el producto seleccionado -->
+    <div class="row mt-3" *ngIf="producto && toggleMod==true">
+      <div class="row">
+        <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;cancelarModificaciones()'>Cancelar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);comprobarModificaciones()'>Aceptar</button>
+      </div>
+      <table name="tableModifying" class="table">
+        <tr>
+          <th>Campo</th>
+          <th>Valor</th>
+        </tr>
+        <tr *ngFor="let c of campos;let i = index" [formGroup]="myGroup">
+          <td *ngIf="['available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1">{{c}}</td>
+          <!--Campos que no se mostraran-->
+          <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]=='[object Object]'">
+            <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]!='[object Object]' && (vals[i]!=='1' || vals[i]!=='0')">
+            <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <!-- Campos que se mostrara -->
+          <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short'].indexOf(c) > -1 && vals[i].language==6">
+            <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!=6">
+            <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Producto" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
+            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
+            </textarea>
+          </td>
+          <!-- <td *ngIf="c!='quantity' && (vals[i]=='1' || vals[i]=='0')">
+            <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" />
+            <select id="sel{{c}}" name="{{c}}" style="width:4em;">
+              <option *ngIf="vals[i]=='1'" selected >Si</option>
+              <option *ngIf="vals[i]!='1'">Si</option>
+              <option *ngIf="vals[i]=='0'" selected >No</option>
+              <option *ngIf="vals[i]!='0'">No</option>
+            </select>
+          </td> -->
+        </tr>
+      </table>
+    </div>
+  
+    <!-- Listado -->
+    <div class="row" *ngIf="toggleLst">
+      <!--Barra de busqueda-->
+      <div *ngIf="productos || toggleBuscar==1" class="row">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="4">Busqueda de Productos: </th>
+            </tr>
+            <tr>
+              <th colspan=2>ID: </th>
+              <th>Referencia: </th>
+              <th>Nombre: </th>
+              <th>Activo: </th>
+              <th colspan="2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input id="idmin" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
+              </td>
+              <td>
+                <input id="idmax" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
+              </td>
+              <td>
+                <input id="byReference" type="text" value="" [(ngModel)]="searchRef"/>
+              </td>
+              <td>
+                <input id="byName" type="text" value="" [(ngModel)]="searchName"/>
+              </td>
+              <td>
+                <select id="isActive" style="width:4em;" [(ngModel)]="searchActive">
+                  <option [ngValue]="" selected></option>
+                  <option [ngValue]="1">Si</option>
+                  <option [ngValue]="'2'">No</option>
+                </select>
+              </td>
+              <td>
+                <div class="row">
+                  <input type="button" value="Buscar" class="btn btn-primary col" (click)="buscarProductos()"/>
+                  <input type="button" value="Vaciar" class="btn btn-primary col" (click)="limpiarCampos()"/>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!--Aqui se muestran todos los productos-->
+      <h2 class="mt-3 col-5">Listado de productos</h2>
+      <p *ngIf="!productos">Cargando</p>
+      <div *ngIf="productos" class="mt-3 col-7 row">
+        <!--Paginado de Listado de todos los productos-->
+        <div *ngIf="toggleBuscar==0" class="col text-end">
+          <button class="btn btn-primary" *ngIf="pagina>0" (click)="getPrimera()">Primera</button>
+          <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;getPagina()">{{pagina-2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;getPagina()">{{pagina-1}}</button>
+          <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
+          <label *ngIf="pagina>0 && pagina<paginas-1" class="btn btn-primary disabled mb-0">{{pagina}}</label>
+          <label *ngIf="pagina==paginas" class="btn btn-primary disabled mb-0">Ultima</label>
+          <button class="btn btn-primary" *ngIf="pagina+1<paginas"
+            (click)="pagina=pagina+1;getPagina()">{{pagina+1}}</button>
+          <button class="btn btn-primary" *ngIf="pagina+2<paginas"
+            (click)="pagina=pagina+2;getPagina()">{{pagina+2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina<paginas" (click)="getUltima()">Ultima</button>
+        </div>
+        <!--Paginado de Busquedas-->
+        <div *ngIf="toggleBuscar==1" class="col text-end">
+          <button class="btn btn-primary" *ngIf="pagina>0" (click)="pagina=0">Primera</button>
+          <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;">{{pagina-2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;">{{pagina-1}}</button>
+          <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
+          <label *ngIf="pagina>0 && pagina<UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">{{pagina}}</label>
+          <label *ngIf="pagina==UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">Ultima</label>
+          <button class="btn btn-primary" *ngIf="pagina+1<UltPagBuscar(paginas)"
+            (click)="pagina=pagina+1;">{{pagina+1}}</button>
+          <button class="btn btn-primary" *ngIf="pagina+2<UltPagBuscar(paginas)"
+            (click)="pagina=pagina+2;">{{pagina+2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina<UltPagBuscar(paginas)" (click)="pagina=UltPagBuscar(paginas)">Ultima</button>
+        </div>
+        <!--Boton Exportar-->
+        <div class="col-1">
+          <button class="btn btn-primary" *ngIf="toggleExport"
+            (click)="toggleLst=!toggleLst;toggleExport=true;">Exportar</button>
+        </div>
+      </div>
+
+      <!-- <table class="table" *ngIf="productos">
+            <tr class="align-middle">
+                <th *ngIf="productos" scope="col">ID</th>
+                <th *ngIf="productos" scope="col">Nombre</th>
+                <th *ngIf="productos" scope="col">Referencia</th>
+                <th *ngIf="productos" scope="col"></th>
+                <th *ngIf="productos" scope="col"></th>
+            </tr>
+            <tr *ngFor="let pr of productos;" class="align-middle">
+                <td class="l-3 align-middle">{{pr["id"]}}</td>
+                <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
+                <td class="l-3 align-middle">{{pr["reference"]}}</td>
+                <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm" (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+                <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])'/></td>
+            </tr>
+        </table> -->
+
+      <!-- Tabla de listado de todos los productos -->
+      <table class="table table-hover" *ngIf="productos && toggleBuscar==0">
+        <thead>
+          <tr class="align-middle">
+            <th *ngIf="productos" scope="col">ID</th>
+            <th *ngIf="productos" scope="col">Nombre</th>
+            <th *ngIf="productos" scope="col">Referencia</th>
+            <th *ngIf="productos" scope="col" colspan="2"></th>
+            <th *ngIf="productos" scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pr of productos;" class="align-middle">
+            <td class="l-3 align-middle">{{pr["id"]}}</td>
+            <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
+            <td class="l-3 align-middle">{{pr["reference"]}}</td>
+            <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+                (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+            <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
             </td>
-            <td>
-              <input id="byName" type="text" value="" [(ngModel)]="searchName"/>
-            </td>
-            <td>
-              <select id="isActive" style="width:4em;" [(ngModel)]="searchActive">
-                <option [ngValue]="" selected></option>
-                <option [ngValue]="1">Si</option>
-                <option [ngValue]="'2'">No</option>
-              </select>
-            </td>
-            <td>
-              <div class="row">
-                <input type="button" value="Buscar" class="btn btn-primary col" (click)="buscarProductos()"/>
-                <input type="button" value="Vaciar" class="btn btn-primary col" (click)="limpiarCampos()"/>
-              </div>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Tabla de listado de productos buscados -->
+      <table class="table table-hover" *ngIf="productos && toggleBuscar==1">
+        <thead>
+          <tr class="align-middle">
+            <th *ngIf="productos" scope="col">ID</th>
+            <th *ngIf="productos" scope="col">Nombre</th>
+            <th *ngIf="productos" scope="col">Referencia</th>
+            <th *ngIf="productos" scope="col" colspan="2"></th>
+            <th *ngIf="productos" scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pr of productos;index as i;" class="align-middle">
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["id"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["name"]["language"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["reference"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+                (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    <!--Aqui se muestran todos los productos-->
-    <h2 class="mt-3 col-5">Listado de productos</h2>
-    <p *ngIf="!productos">Cargando</p>
-    <div *ngIf="productos" class="mt-3 col-7 row">
-      <!--Paginado de Listado de todos los productos-->
-      <div *ngIf="toggleBuscar==0" class="col text-end">
-        <button class="btn btn-primary" *ngIf="pagina>0" (click)="getPrimera()">Primera</button>
-        <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;getPagina()">{{pagina-2}}</button>
-        <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;getPagina()">{{pagina-1}}</button>
-        <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
-        <label *ngIf="pagina>0 && pagina<paginas-1" class="btn btn-primary disabled mb-0">{{pagina}}</label>
-        <label *ngIf="pagina==paginas" class="btn btn-primary disabled mb-0">Ultima</label>
-        <button class="btn btn-primary" *ngIf="pagina+1<paginas"
-          (click)="pagina=pagina+1;getPagina()">{{pagina+1}}</button>
-        <button class="btn btn-primary" *ngIf="pagina+2<paginas"
-          (click)="pagina=pagina+2;getPagina()">{{pagina+2}}</button>
-        <button class="btn btn-primary" *ngIf="pagina<paginas" (click)="getUltima()">Ultima</button>
-      </div>
-      <!--Paginado de Busquedas-->
-      <div *ngIf="toggleBuscar==1" class="col text-end">
-        <button class="btn btn-primary" *ngIf="pagina>0" (click)="pagina=0">Primera</button>
-        <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;">{{pagina-2}}</button>
-        <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;">{{pagina-1}}</button>
-        <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
-        <label *ngIf="pagina>0 && pagina<UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">{{pagina}}</label>
-        <label *ngIf="pagina==UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">Ultima</label>
-        <button class="btn btn-primary" *ngIf="pagina+1<UltPagBuscar(paginas)"
-          (click)="pagina=pagina+1;">{{pagina+1}}</button>
-        <button class="btn btn-primary" *ngIf="pagina+2<UltPagBuscar(paginas)"
-          (click)="pagina=pagina+2;">{{pagina+2}}</button>
-        <button class="btn btn-primary" *ngIf="pagina<UltPagBuscar(paginas)" (click)="pagina=UltPagBuscar(paginas)">Ultima</button>
-      </div>
-      <!--Boton Exportar-->
-      <div class="col-1">
-        <button class="btn btn-primary" *ngIf="toggleExport"
-          (click)="toggleLst=!toggleLst;toggleExport=true;">Exportar</button>
-      </div>
+    <!-- Listado de productos solo con IDs, Solo se ejecuta si ocurre algun error en las llamadas -->
+    <div class="row" *ngIf="productos && (!producto || toggleLst==true) && esFalso==true">
+      <!--
+        <p [innerHTML]="productos"></p>
+      -->
+      <h2 class="mt-3">Listado de productos</h2>
+      <p *ngIf="!productos">Cargando</p>
+      <table class="table" *ngIf="productos">
+        <tr>
+          <th *ngIf="productos" scope="col">ID</th>
+          <th *ngIf="productos" scope="col"></th>
+        </tr>
+        <tr *ngFor="let pr of productos;">
+          <td class="l-3">{{pr["@attributes"]["id"]}}</td>
+          <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+              (click)='getUnProducto(pr["@attributes"]["id"])'>Ver Datos</button></td>
+        </tr>
+      </table>
     </div>
 
-    <!-- <table class="table" *ngIf="productos">
+    <!--Exportacion-->
+    <div *ngIf="toggleExport">
+      <div>
+        <h2 *ngIf="tienda">Exportando desde Tienda</h2>
+        <h2 *ngIf="distri">Exportando desde Distribuidor</h2>
+        <h2 *ngIf="latam">Exportando desde Latam</h2>
+        <h2 *ngIf="triwee">Exportando desde Triwee</h2>
+        <h2 *ngIf="tienda==false && distri==false && latam==false">No se han cargado los datos de la tienda origen</h2>
+      </div>
+      <select [(ngModel)]="selectedOpt" (change)="this.destino=selectedOpt" class="form-select form-select-lg mb-3">
+        <option value="">Selecciona Destino</option>
+        <option *ngIf="!tienda" value="tienda">Tienda</option>
+        <option *ngIf="!distri" value="distribuidor">Distribuidor</option>
+        <option *ngIf="!latam" value="latam">Latam</option>
+        <option *ngIf="!triwee" value="triwee">Triwee</option>
+      </select>
+      <div>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="!toggleExporting" (click)="exprtrProductos();toggleExporting=true">Empezar</button>
+        <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0 && !toggleExporting"
+        (click)='toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleDone=false'>Volver a la lista</button>
+        <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
+        (click)='toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;toggleDone=false'>Volver a la lista</button>
+      </div>
+      <label *ngIf="toggleError" class="mt-3 alert alert-dantger">No se ha seleccionado destino</label>
+      <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
+      <label *ngIf="toggleDone" class="mt-3 alert alert-success">Producto/s exportado/s satisfactoriamente</label>
+    </div>
+  </div>
+
+  <div *ngIf="toggleTransporte">
+    <!--Detalles del transporte seleccionado-->
+    <div class="row mt-3" *ngIf="transporte && toggleLst==false && toggleExport==false && toggleMod==false">
+      <div class="row">
+        <h3 class="col">Transporte {{transporte["name"]}}</h3>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm"
+          (click)='toggleMod=!toggleMod' disabled>Modificar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm"
+          (click)='toggleExport=!toggleExport;updtSelected(transporte["id"])' disabled>Exportar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
+          (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"
+          (click)='toggleBuscar=1;toggleLst=!toggleLst;'>Volver a la lista</button>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Campo</th>
+            <th scope="col">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of campos;let i = index">
+            <td class="l-3" >{{c}}</td>
+            <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
+            <td class="l-3" *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+              <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
+              <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
+              <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
+            </td>
+            <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
+              <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
+              <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
+                (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
+              <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
+            </td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
+            <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
+            <td class="l-3" *ngIf="vals[i]=='0'">No</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Modificar el transporte seleccionado -->
+    <div class="row mt-3" *ngIf="transporte && toggleMod==true">
+      <div class="row">
+        <h2 class="col">Transporte {{transporte["name"]}}</h2>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;cancelarModificaciones()'>Cancelar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(transporte["id"]);comprobarModificaciones()'>Aceptar</button>
+      </div>
+      <table name="tableModifying" class="table">
+        <tr>
+          <th>Campo</th>
+          <th>Valor</th>
+        </tr>
+        <tr *ngFor="let c of campos;let i = index" [formGroup]="myGroup">
+          <td *ngIf="['available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1">{{c}}</td>
+          <!--Campos que no se mostraran-->
+          <td formGroupName="Transporte" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]=='[object Object]'">
+            <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Transporte" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]!='[object Object]' && (vals[i]!=='1' || vals[i]!=='0')">
+            <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <!-- Campos que se mostrara -->
+          <td formGroupName="Transporte" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short'].indexOf(c) > -1 && vals[i].language==6">
+            <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Transporte" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!=6">
+            <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
+          </td>
+          <td formGroupName="Transporte" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
+            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
+            </textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+  
+    <!-- Listado -->
+    <div class="row" *ngIf="toggleLst">
+      <!-- Barra de busqueda
+      <div *ngIf="transportes || toggleBuscar==1" class="row">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="4">Busqueda de Transportes: </th>
+            </tr>
+            <tr>
+              <th colspan=2>ID: </th>
+              <th>Nombre: </th>
+              <th>Retraso: </th>
+              <th>Activo: </th>
+              <th>Envio Gratis: </th>
+              <th colspan="2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input id="idmin" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
+              </td>
+              <td>
+                <input id="idmax" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
+              </td>
+              <td>
+                <input id="byReference" type="text" value="" [(ngModel)]="searchRef"/>
+              </td>
+              <td>
+                <input id="byName" type="text" value="" [(ngModel)]="searchName"/>
+              </td>
+              <td>
+                <select id="isActive" style="width:4em;" [(ngModel)]="searchActive">
+                  <option [ngValue]="" selected></option>
+                  <option [ngValue]="1">Si</option>
+                  <option [ngValue]="'2'">No</option>
+                </select>
+              </td>
+              <td>
+                <div class="row">
+                  <input type="button" value="Buscar" class="btn btn-primary col" (click)="buscarProductos()"/>
+                  <input type="button" value="Vaciar" class="btn btn-primary col" (click)="limpiarCampos()"/>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+
+      <!--Aqui se muestran todos los transportes-->
+      <h2 class="mt-3 col-5">Listado de transportes</h2>
+      <p *ngIf="!transportes">Cargando</p>
+      <div *ngIf="transportes" class="mt-3 col-7 row">
+        <!-- Paginado de Listado de todos los transportes
+        <div *ngIf="toggleBuscar==0" class="col text-end">
+          <button class="btn btn-primary" *ngIf="pagina>0" (click)="getPrimera()">Primera</button>
+          <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;getPagina()">{{pagina-2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;getPagina()">{{pagina-1}}</button>
+          <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
+          <label *ngIf="pagina>0 && pagina<paginas-1" class="btn btn-primary disabled mb-0">{{pagina}}</label>
+          <label *ngIf="pagina==paginas" class="btn btn-primary disabled mb-0">Ultima</label>
+          <button class="btn btn-primary" *ngIf="pagina+1<paginas"
+            (click)="pagina=pagina+1;getPagina()">{{pagina+1}}</button>
+          <button class="btn btn-primary" *ngIf="pagina+2<paginas"
+            (click)="pagina=pagina+2;getPagina()">{{pagina+2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina<paginas" (click)="getUltima()">Ultima</button>
+        </div>-->
+        <!--Paginado de Busquedas-->
+        <!-- <div *ngIf="toggleBuscar==1" class="col text-end">
+          <button class="btn btn-primary" *ngIf="pagina>0" (click)="pagina=0">Primera</button>
+          <button class="btn btn-primary" *ngIf="pagina-2>0" (click)="pagina=pagina-2;">{{pagina-2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina-1>0" (click)="pagina=pagina-1;">{{pagina-1}}</button>
+          <label *ngIf="pagina==0" class="btn btn-primary disabled mb-0">Primera</label>
+          <label *ngIf="pagina>0 && pagina<UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">{{pagina}}</label>
+          <label *ngIf="pagina==UltPagBuscar(paginas)" class="btn btn-primary disabled mb-0">Ultima</label>
+          <button class="btn btn-primary" *ngIf="pagina+1<UltPagBuscar(paginas)"
+            (click)="pagina=pagina+1;">{{pagina+1}}</button>
+          <button class="btn btn-primary" *ngIf="pagina+2<UltPagBuscar(paginas)"
+            (click)="pagina=pagina+2;">{{pagina+2}}</button>
+          <button class="btn btn-primary" *ngIf="pagina<UltPagBuscar(paginas)" (click)="pagina=UltPagBuscar(paginas)">Ultima</button>
+        </div> -->
+        <!--Boton Exportar-->
+        <div class="col-1">
+          <button class="btn btn-primary" *ngIf="toggleExport"
+            (click)="toggleLst=!toggleLst;toggleExport=true;">Exportar</button>
+        </div>
+      </div>
+
+      <!-- Tabla de listado de todos los transportes -->
+      <table class="table table-hover" *ngIf="transportes && toggleBuscar==0">
+        <thead>
           <tr class="align-middle">
-              <th *ngIf="productos" scope="col">ID</th>
-              <th *ngIf="productos" scope="col">Nombre</th>
-              <th *ngIf="productos" scope="col">Referencia</th>
-              <th *ngIf="productos" scope="col"></th>
-              <th *ngIf="productos" scope="col"></th>
+            <th *ngIf="transportes" scope="col">ID</th>
+            <th *ngIf="transportes" scope="col">Nombre</th>
+            <th *ngIf="transportes" scope="col">Retraso</th>
+            <th *ngIf="transportes" scope="col">Activo</th>
+            <th *ngIf="transportes" scope="col">Envio Gratis</th>
+            <th *ngIf="transportes" scope="col" colspan="2"></th>
+            <th *ngIf="transportes" scope="col"></th>
           </tr>
-          <tr *ngFor="let pr of productos;" class="align-middle">
-              <td class="l-3 align-middle">{{pr["id"]}}</td>
-              <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
-              <td class="l-3 align-middle">{{pr["reference"]}}</td>
-              <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm" (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-              <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])'/></td>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tr of transportes;" class="align-middle">
+            <td class="l-3 align-middle">{{tr["id"]}}</td>
+            <td class="l-3 align-middle">{{tr["name"]}}</td>
+            <td class="l-3 align-middle">{{tr["delay"]["language"]}}</td>
+            <td class="l-3 align-middle">{{tr["active"]}}</td>
+            <td class="l-3 align-middle">{{tr["is_free"]}}</td>
+            <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+                (click)='getUnTransporte(tr["id"])'>Ver Datos</button></td>
+            <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(tr["id"])' />
+            </td>
           </tr>
-      </table> -->
-
-    <!-- Tabla de listado de todos los productos -->
-    <table class="table table-hover" *ngIf="productos && toggleBuscar==0">
-      <thead>
-        <tr class="align-middle">
-          <th *ngIf="productos" scope="col">ID</th>
-          <th *ngIf="productos" scope="col">Nombre</th>
-          <th *ngIf="productos" scope="col">Referencia</th>
-          <th *ngIf="productos" scope="col" colspan="2"></th>
-          <th *ngIf="productos" scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let pr of productos;" class="align-middle">
-          <td class="l-3 align-middle">{{pr["id"]}}</td>
-          <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
-          <td class="l-3 align-middle">{{pr["reference"]}}</td>
-          <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-              (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-          <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- Tabla de listado de productos buscados -->
-    <table class="table table-hover" *ngIf="productos && toggleBuscar==1">
-      <thead>
-        <tr class="align-middle">
-          <th *ngIf="productos" scope="col">ID</th>
-          <th *ngIf="productos" scope="col">Nombre</th>
-          <th *ngIf="productos" scope="col">Referencia</th>
-          <th *ngIf="productos" scope="col" colspan="2"></th>
-          <th *ngIf="productos" scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let pr of productos;index as i;" class="align-middle">
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["id"]}}</td>
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["name"]["language"]}}</td>
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["reference"]}}</td>
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-              (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
-          <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- Listado de productos solo con IDs, Solo se ejecuta si ocurre algun error en las llamadas -->
-  <div class="row" *ngIf="productos && (!producto || toggleLst==true) && esFalso==true">
-    <!--
-      <p [innerHTML]="productos"></p>
-  -->
-    <h2 class="mt-3">Listado de productos</h2>
-    <p *ngIf="!productos">Cargando</p>
-    <table class="table" *ngIf="productos">
-      <tr>
-        <th *ngIf="productos" scope="col">ID</th>
-        <th *ngIf="productos" scope="col"></th>
-      </tr>
-      <tr *ngFor="let pr of productos;">
-        <td class="l-3">{{pr["@attributes"]["id"]}}</td>
-        <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-            (click)='getUnProducto(pr["@attributes"]["id"])'>Ver Datos</button></td>
-      </tr>
-    </table>
-  </div>
-
-  <!--Exportacion-->
-  <div *ngIf="toggleExport">
-    <div>
-      <h2 *ngIf="tienda">Exportando desde Tienda</h2>
-      <h2 *ngIf="distri">Exportando desde Distribuidor</h2>
-      <h2 *ngIf="latam">Exportando desde Latam</h2>
-      <h2 *ngIf="triwee">Exportando desde Triwee</h2>
-      <h2 *ngIf="tienda==false && distri==false && latam==false">No se han cargado los datos de la tienda origen</h2>
+        </tbody>
+      </table>
+      <!-- Tabla de listado de transportes buscados -->
+      <table class="table table-hover" *ngIf="transportes && toggleBuscar==1">
+        <thead>
+          <tr class="align-middle">
+            <th *ngIf="transportes" scope="col">ID</th>
+            <th *ngIf="transportes" scope="col">Nombre</th>
+            <th *ngIf="transportes" scope="col">Referencia</th>
+            <th *ngIf="transportes" scope="col" colspan="2"></th>
+            <th *ngIf="transportes" scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tr of transportes;index as i;" class="align-middle">
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{tr["id"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{tr["name"]["language"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{tr["reference"]}}</td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+                (click)='getUnTransporte(tr["id"])'>Ver Datos</button></td>
+            <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(tr["id"])' />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <select [(ngModel)]="selectedOpt" (change)="this.destino=selectedOpt" class="form-select form-select-lg mb-3">
-      <option value="">Selecciona Destino</option>
-      <option *ngIf="!tienda" value="tienda">Tienda</option>
-      <option *ngIf="!distri" value="distribuidor">Distribuidor</option>
-      <option *ngIf="!latam" value="latam">Latam</option>
-      <option *ngIf="!triwee" value="triwee">Triwee</option>
-    </select>
-    <div>
-      <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="!toggleExporting" (click)="exprtrProductos();toggleExporting=true">Empezar</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0 && !toggleExporting"
-      (click)='toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleDone=false'>Volver a la lista</button>
-      <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
-      (click)='toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;toggleDone=false'>Volver a la lista</button>
+    <!-- Listado de transportes solo con IDs, Solo se ejecuta si ocurre algun error en las llamadas -->
+    <div class="row" *ngIf="transportes && (!transporte || toggleLst==true) && esFalso==true">
+      <!--
+        <p [innerHTML]="transportes"></p>
+      -->
+      <h2 class="mt-3">Listado de transportes</h2>
+      <p *ngIf="!transportes">Cargando</p>
+      <table class="table" *ngIf="transportes">
+        <tr>
+          <th *ngIf="transportes" scope="col">ID</th>
+          <th *ngIf="transportes" scope="col"></th>
+        </tr>
+        <tr *ngFor="let tr of transportes;">
+          <td class="l-3">{{tr["@attributes"]["id"]}}</td>
+          <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
+              (click)='getUnTransporte(tr["@attributes"]["id"])'>Ver Datos</button></td>
+        </tr>
+      </table>
     </div>
-    <label *ngIf="toggleError" class="mt-3 alert alert-dantger">No se ha seleccionado destino</label>
-    <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
-    <label *ngIf="toggleDone" class="mt-3 alert alert-success">Producto/s exportado/s satisfactoriamente</label>
+
+    <!--Exportacion-->
+    <div *ngIf="toggleExport">
+      <div>
+        <h2 *ngIf="tienda">Exportando desde Tienda</h2>
+        <h2 *ngIf="distri">Exportando desde Distribuidor</h2>
+        <h2 *ngIf="latam">Exportando desde Latam</h2>
+        <h2 *ngIf="triwee">Exportando desde Triwee</h2>
+        <h2 *ngIf="tienda==false && distri==false && latam==false">No se han cargado los datos de la tienda origen</h2>
+      </div>
+      <select [(ngModel)]="selectedOpt" (change)="this.destino=selectedOpt" class="form-select form-select-lg mb-3">
+        <option value="">Selecciona Destino</option>
+        <option *ngIf="!tienda" value="tienda">Tienda</option>
+        <option *ngIf="!distri" value="distribuidor">Distribuidor</option>
+        <option *ngIf="!latam" value="latam">Latam</option>
+        <option *ngIf="!triwee" value="triwee">Triwee</option>
+      </select>
+      <div>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="!toggleExporting" (click)="exprtrTransportes();toggleExporting=true">Empezar</button>
+        <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0 && !toggleExporting"
+        (click)='toggleExport=!toggleExport;transporteIds=[];toggleLst=!toggleLst;toggleDone=false'>Volver a la lista</button>
+        <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
+        (click)='toggleExport=!toggleExport;transporteIds=[];toggleLst=!toggleLst;toggleBuscar=1;toggleDone=false'>Volver a la lista</button>
+      </div>
+      <label *ngIf="toggleError" class="mt-3 alert alert-dantger">No se ha seleccionado destino</label>
+      <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
+      <label *ngIf="toggleDone" class="mt-3 alert alert-success">Transporte/s exportado/s satisfactoriamente</label>
+    </div>
   </div>
 </div>
