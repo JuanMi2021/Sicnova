@@ -57,7 +57,6 @@ export class CrudService {
   exportarProductos(infoImport:any){
     return this.http.post(`${this.url}callTiendas.php`,JSON.stringify(infoImport));
   }
-
   
   exportarTransportes(infoImport:any){
     return this.http.post(`${this.url}callTiendas.php`,JSON.stringify(infoImport));

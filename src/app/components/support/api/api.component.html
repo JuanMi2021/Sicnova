@@ -332,9 +332,7 @@
       <div class="row">
         <h3 class="col">Transporte {{transporte["name"]}}</h3>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm"
-          (click)='toggleMod=!toggleMod' disabled>Modificar</button>
-        <button class="col-1 btn btn-light btn-outline-primary btn-sm"
-          (click)='toggleExport=!toggleExport;updtSelected(transporte["id"])' disabled>Exportar</button>
+          (click)='toggleExport=!toggleExport;updtSelected(transporte["id"])'>Exportar</button>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0"
           (click)='toggleLst=!toggleLst;'>Volver a la lista</button>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2"

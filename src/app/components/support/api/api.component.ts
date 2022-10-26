@@ -1,4 +1,4 @@
-import { Attribute, Component, OnInit } from '@angular/core';
+import { Attribute, Component, ViewChild, ViewEncapsulation, OnInit } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CrudService } from '../../../services/crud.service';
@@ -502,7 +502,7 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.exportarTransportes(info).subscribe((resultado)=>{if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
+      this.servicio.exportarTransportes(info).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
     }
 
   }
