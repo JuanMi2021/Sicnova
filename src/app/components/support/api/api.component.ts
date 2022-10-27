@@ -35,6 +35,7 @@ export class ApiComponent implements OnInit {
   distri:boolean=false;
   latam:boolean=false;
   triwee:boolean=false;
+  b2btri:boolean=false;
   //variables Any
   productos:any;
   transportes:any;
@@ -154,6 +155,14 @@ export class ApiComponent implements OnInit {
       console.log("Cargando Producto de Latam");
       uri="latam";
     }
+    if (this.triwee) {
+      console.log("Cargando Producto de Latam");
+      uri="triwee";
+    }
+    if (this.b2btri) {
+      console.log("Cargando Producto de Latam");
+      uri="b2btri";
+    }
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
@@ -197,6 +206,14 @@ export class ApiComponent implements OnInit {
     if (this.latam) {
       console.log("Cargando Transporte de Latam");
       uri="latam";
+    }
+    if (this.triwee) {
+      console.log("Cargando Producto de Latam");
+      uri="triwee";
+    }
+    if (this.b2btri) {
+      console.log("Cargando Producto de Latam");
+      uri="b2btri";
     }
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
@@ -242,6 +259,9 @@ export class ApiComponent implements OnInit {
     }
     if(this.triwee){
       uri= "triwee"
+    }
+    if (this.b2btri) {
+      uri="b2btri";
     }
 
     let retorno="";
@@ -308,6 +328,9 @@ export class ApiComponent implements OnInit {
     this.tienda=false;
     this.distri=false;
     this.latam=false;
+    this.triwee=false;
+    this.b2btri=false;
+    
     if(this.toggleProducto){
       if(this.toggleExport==true){
         this.toggleExport=!this.toggleExport;
@@ -326,6 +349,8 @@ export class ApiComponent implements OnInit {
     this.tienda=false;
     this.distri=false;
     this.latam=false;
+    this.triwee=false;
+    this.b2btri=false;
     if(this.toggleExport==true){
       this.toggleExport=!this.toggleExport;
       this.transporteIds=[];
@@ -344,6 +369,8 @@ export class ApiComponent implements OnInit {
       this.tienda=true;
       this.distri=false;
       this.latam=false;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleProducto){
       if(this.toggleExport==true){
@@ -364,6 +391,8 @@ export class ApiComponent implements OnInit {
       this.tienda=true;
       this.distri=false;
       this.latam=false;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleTransporte){
       if(this.toggleExport==true){
@@ -383,6 +412,8 @@ export class ApiComponent implements OnInit {
       this.tienda=false;
       this.distri=true;
       this.latam=false;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleProducto){
       if(this.toggleExport==true){
@@ -403,6 +434,8 @@ export class ApiComponent implements OnInit {
       this.tienda=false;
       this.distri=true;
       this.latam=false;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleTransporte){
       if(this.toggleExport==true){
@@ -423,6 +456,8 @@ export class ApiComponent implements OnInit {
       this.tienda=false;
       this.distri=false;
       this.latam=true;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleProducto){
       if(this.toggleExport==true){
@@ -443,6 +478,8 @@ export class ApiComponent implements OnInit {
       this.tienda=false;
       this.distri=false;
       this.latam=true;
+      this.triwee=false;
+      this.b2btri=false;
     }
     if(this.toggleTransporte){
       if(this.toggleExport==true){
@@ -454,6 +491,92 @@ export class ApiComponent implements OnInit {
       this.toggleLst=true;
       this.transportes=null;
       this.servicio.getTransportes("latam").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
+  };
+
+  getProductosTriwee(){
+    if(this.triwee==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=false;
+      this.latam=false;
+      this.triwee=true;
+      this.b2btri=false;
+    }
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("triwee").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
+      this.servicio.getProductos("triwee",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
+  };
+
+  getTransportesTriwee(){
+    if(this.triwee==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=false;
+      this.latam=false;
+      this.triwee=true;
+      this.b2btri=false;
+    }
+    if(this.toggleTransporte){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.transporteIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("triwee").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+    }
+  };
+
+  getProductosB2B(){
+    if(this.b2btri==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=false;
+      this.latam=false;
+      this.triwee=false;
+      this.b2btri=true;
+    }
+    if(this.toggleProducto){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.productoIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.productos=null;
+      this.servicio.damePaginas("b2btri").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
+      this.servicio.getProductos("b2btri",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+    }
+  };
+
+  getTransportesB2B(){
+    if(this.b2btri==false || this.paginas==0){
+      this.tienda=false;
+      this.distri=false;
+      this.latam=false;
+      this.triwee=false;
+      this.b2btri=true;
+    }
+    if(this.toggleTransporte){
+      if(this.toggleExport==true){
+        this.toggleExport=!this.toggleExport;
+        this.transporteIds=[];
+      }
+      if(this.toggleBuscar==1)this.pagina=0;
+      this.toggleBuscar=0;
+      this.toggleLst=true;
+      this.transportes=null;
+      this.servicio.getTransportes("b2btri").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
     }
   };
 
@@ -471,13 +594,17 @@ export class ApiComponent implements OnInit {
     if(this.triwee){
       info={origen:"triwee",destino:this.selectedOpt,Producto:this.productoIds};
     }
+    if(this.b2btri){
+      info={origen:"b2btri",destino:this.selectedOpt,Producto:this.productoIds};
+    }
 
     if(this.destino==""){
       this.toggleError=true;
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.exportarProductos(info).subscribe((resultado)=>{if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
+      console.log(info);
+      this.servicio.exportarProductos(info).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
     }
 
   }
@@ -495,6 +622,9 @@ export class ApiComponent implements OnInit {
     }
     if(this.triwee){
       info={origen:"triwee",destino:this.selectedOpt,Transporte:this.transporteIds};
+    }
+    if(this.b2btri){
+      info={origen:"b2btri",destino:this.selectedOpt,Producto:this.productoIds};
     }
 
     if(this.destino==""){
@@ -555,6 +685,16 @@ export class ApiComponent implements OnInit {
       this.pagina=this.paginas;
       this.getProductosLatam();
     }
+
+    if(this.triwee){
+      this.pagina=this.paginas;
+      this.getProductosTriwee();
+    }
+
+    if(this.b2btri){
+      this.pagina=this.paginas;
+      this.getProductosB2B();
+    }
     console.log("after:" + this.pagina + "/" + this.paginas);
   }
 
@@ -567,6 +707,12 @@ export class ApiComponent implements OnInit {
     }
     if(this.latam){
       this.getProductosLatam();
+    }
+    if(this.triwee){
+      this.getProductosTriwee();
+    }
+    if(this.b2btri){
+      this.getProductosB2B();
     }
   }
 
@@ -585,6 +731,14 @@ export class ApiComponent implements OnInit {
     if(this.latam){
       this.pagina=0;
       this.getProductosLatam();
+    }
+    if(this.triwee){
+      this.pagina=0;
+      this.getProductosTriwee();
+    }
+    if(this.b2btri){
+      this.pagina=0;
+      this.getProductosB2B();
     }
 
   }
@@ -634,6 +788,12 @@ export class ApiComponent implements OnInit {
       if (this.latam) {
         dir="latam";
       }
+      if (this.triwee) {
+        dir="triwee";
+      }
+      if (this.b2btri) {
+        dir="b2btri";
+      }
       if(salida=="" || salida=="null"){
         console.log("No hay datos de Busqueda");
         this.toggleBuscar=0;
@@ -664,6 +824,14 @@ export class ApiComponent implements OnInit {
 
     if(this.latam){
       this.getProductosLatam();
+    }
+
+    if(this.triwee){
+      this.getProductosTriwee();
+    }
+
+    if(this.b2btri){
+      this.getProductosB2B();
     }
     this.pagina=0;
     this.toggleBuscar=0;
