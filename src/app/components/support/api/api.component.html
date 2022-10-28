@@ -140,7 +140,7 @@
   
     <!-- Listado -->
     <div class="row" *ngIf="toggleLst">
-      <!--Barra de busqueda-->
+      <!--Barra de busqueda | Buscador -->
       <div *ngIf="productos || toggleBuscar==1" class="row">
         <table class="table">
           <thead>
@@ -158,19 +158,19 @@
           <tbody>
             <tr>
               <td>
-                <input id="idmin" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
+                <input id="idmin" class="form-control" type="text" style="width:4em;" [(ngModel)]="searchMinId" value="" placeholder="min"/>
               </td>
               <td>
-                <input id="idmax" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
+                <input id="idmax" class="form-control" type="text" style="width:4em;" [(ngModel)]="searchMaxId" value="" placeholder="max"/>
               </td>
               <td>
-                <input id="byReference" type="text" value="" [(ngModel)]="searchRef"/>
+                <input id="byReference" class="form-control" type="text" value="" [(ngModel)]="searchRef"/>
               </td>
               <td>
-                <input id="byName" type="text" value="" [(ngModel)]="searchName"/>
+                <input id="byName" class="form-control" type="text" value="" [(ngModel)]="searchName"/>
               </td>
               <td>
-                <select id="isActive" style="width:4em;" [(ngModel)]="searchActive">
+                <select id="isActive" class="form-select" style="width:4em;" [(ngModel)]="searchActive">
                   <option [ngValue]="" selected></option>
                   <option [ngValue]="1">Si</option>
                   <option [ngValue]="'2'">No</option>
