@@ -71,10 +71,10 @@
         <tbody>
           <tr>
             <td class="l-3">Imagenes</td>
-            <td class="l-3" >
-              <p *ngFor="let im of this.imagenes;let i = index">
-                {{im["id"]}}
-              </p>
+            <td class="l-3">
+              <a *ngFor="let im of this.imagenes;let i = index" href="{{im}}" target="_blank">
+                <img src="{{im}}" style="width:100px;height: 100px;" />
+              </a>    
             </td>
           </tr>
           <tr *ngFor="let c of campos;let i = index">

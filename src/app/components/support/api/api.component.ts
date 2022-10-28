@@ -197,6 +197,34 @@ export class ApiComponent implements OnInit {
             }
           }
           if(this.campos[key]=="associations"){
+            console.log(this.vals[key]["images"]["image"]);
+            for (let i = 0; i < this.vals[key]["images"]["image"].length; i++) {
+              let texto="";
+              if(this.tienda){
+                texto="http://tienda.sicnova3d.com/img/p/";
+              }
+              if(this.b2btri){
+                texto="http://b2b.triwee.shop/img/p/";
+              }
+              if(this.distri){
+                texto="http://distribuidor.sicnova3d.com/img/p/";
+              }
+              if(this.latam){
+                texto="http://latam.sicnova3d.com/img/p/";
+              }
+              if(this.triwee){
+                texto="http://triwee.shop/img/p/";
+              }
+              if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
+                texto="http://prueba.sicnova3d.com/img/p/";
+              }
+
+              for (let j = 0; j < this.vals[key]["images"]["image"][i]["id"].length; j++) {
+                texto+=this.vals[key]["images"]["image"][i]["id"][j] + "/";
+              }
+              texto+=this.vals[key]["images"]["image"][i]["id"] + ".jpg";
+              this.vals[key]["images"]["image"][i]=texto;
+            }
             this.imagenes=this.vals[key]["images"]["image"];
             console.log(this.imagenes)
           }
