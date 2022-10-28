@@ -1,5 +1,6 @@
 <div class="container col-10">
-  <!-- <a href="http://2TBPQMDDCXGQXSSZIS3BZXIT4L4XSI7L@tienda.sicnova3d.com/api/images/products/12477/6662?ps_method=GET" download="imagen'.$contador.'"><img src="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" style="width:50%;" /></a> -->
+  <!-- <a href="http://tienda.sicnova3d.com/api/images/products/12477/6662" download="imagen'.$contador.'"><img src="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" style="width:50%;" /></a> -->
+  <!-- <a href="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" download="imagen'.$contador.'"><img src="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" style="width:50%;" /></a> -->
 <!-- Botonera de seleccion de datos -->
   <div class="col-md-12 text-center">
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
@@ -49,7 +50,8 @@
     <!--Detalles del producto seleccionado-->
     <div class="row mt-3" *ngIf="producto && toggleLst==false && toggleExport==false && toggleMod==false">
       <div class="row">
-        <h3 class="col">Producto {{producto["name"]["language"]}}</h3>
+        <h3 class="col d-flex align-items-center mb-0" *ngIf="triwee || b2btri">Producto {{producto["name"]["language"][0]}}</h3>
+        <h3 class="col d-flex align-items-center mb-0" *ngIf="!triwee && !b2btri">Producto {{producto["name"]["language"]}}</h3>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm"
           (click)='toggleMod=!toggleMod;toggleDone=false;'>Modificar</button>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm"
@@ -67,28 +69,40 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td class="l-3">Imagenes</td>
+            <td class="l-3" >
+              <p *ngFor="let im of this.imagenes;let i = index">
+                {{im["id"]}}
+              </p>
+            </td>
+          </tr>
           <tr *ngFor="let c of campos;let i = index">
             <td class="l-3" >{{c}}</td>
-            <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td>
+            <!-- <td class="l-3" *ngIf="vals[i]!='[object Object]' && vals[i]!=='1' && vals[i]!=='0'">{{vals[i]}}</td> -->
+            <td class="l-3" *ngIf="vals[i]!='[object Object]'">{{vals[i]}}</td>
             <td class="l-3" *ngIf="c=='description_short' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
               <button type="button" *ngIf="toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
               <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
-              <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
+              <div *ngIf="!toggleDscrptnshrt && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></div>
+              <div *ngIf="!toggleDscrptnshrt && !triwee && !b2btri" [innerHTML]="vals[i].language"></div>
             </td>
             <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
               <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
               <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
-              <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
+              <div *ngIf="!toggleDscrptn && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></div>
+              <div *ngIf="!toggleDscrptn && !triwee && !b2btri" [innerHTML]="vals[i].language"></div>
             </td>
             <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
             <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
-            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
-            <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
-            <td class="l-3" *ngIf="vals[i]=='0'">No</td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6 && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6 && !triwee && !b2btri" [innerHTML]="vals[i].language"></td>
+            <!-- <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
+            <td class="l-3" *ngIf="vals[i]=='0'">No</td> -->
           </tr>
         </tbody>
       </table>
@@ -96,7 +110,9 @@
     <!-- Modificar el producto seleccionado -->
     <div class="row mt-3" *ngIf="producto && toggleMod==true">
       <div class="row">
-        <h2 class="col">Producto {{producto["name"]["language"]}}</h2>
+        <h2 class="col d-flex align-items-center mb-0" *ngIf="triwee || b2btri">Producto {{producto["name"]["language"][0]}}</h2>
+        <h2 class="col d-flex align-items-center mb-0" *ngIf="!triwee && !b2btri">Producto {{producto["name"]["language"]}}</h2>
+        <!-- <h2 class="col d-flex align-items-center mb-0">Producto {{producto["name"]["language"]}}</h2> -->
         <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=!toggleMod;cancelarModificaciones()'>Cancelar</button>
         <button class="col-1 btn btn-light btn-outline-primary btn-sm" (click)='toggleMod=false;getUnProducto(producto["id"]);comprobarModificaciones()'>Aceptar</button>
       </div>
@@ -119,11 +135,14 @@
             <input id="{{c}}" name="{{c}}" class="form-control" formControlName={{c}}/>
           </td>
           <td formGroupName="Producto" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!=6">
+            <!-- <input id="{{c}}" name="{{c}}" type="text" class="form-control" *ngIf="triwee || b2btri" value="{{vals[i].language[0]}}" formControlName={{c}}/>
+            <input id="{{c}}" name="{{c}}" type="text" class="form-control" *ngIf="!triwee && !b2btri" value="{{vals[i].language}}" formControlName={{c}}/> -->
             <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
           </td>
           <td formGroupName="Producto" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
-            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
-            </textarea>
+            <!-- <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} *ngIf="triwee || b2btri" [innerHTML]="vals[i].language[0]" ></textarea>
+            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} *ngIf="!triwee && !b2btri" [innerHTML]="vals[i].language" ></textarea> -->
+            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" ></textarea>
           </td>
           <!-- <td *ngIf="c!='quantity' && (vals[i]=='1' || vals[i]=='0')">
             <input id="{{c}}" name="{{c}}" type="text" value="{{vals[i]}}" />
@@ -257,7 +276,8 @@
         <tbody>
           <tr *ngFor="let pr of productos;" class="align-middle">
             <td class="l-3 align-middle">{{pr["id"]}}</td>
-            <td class="l-3 align-middle">{{pr["name"]["language"]}}</td>
+            <td class="l-3 align-middle" *ngIf="triwee || b2btri">{{pr["name"]["language"][0]}}</td>
+            <td class="l-3 align-middle" *ngIf="!triwee && !b2btri">{{pr["name"]["language"]}}</td>
             <td class="l-3 align-middle">{{pr["reference"]}}</td>
             <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
                 (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
@@ -336,12 +356,13 @@
         <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
         (click)='toggleDone=false;toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;'>Volver a la lista</button>
       </div>
-      <label *ngIf="toggleError" class="mt-3 alert alert-dantger">No se ha seleccionado destino</label>
+      <label *ngIf="toggleError" class="mt-3 alert alert-danger">No se ha seleccionado destino</label>
       <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
       <label *ngIf="toggleDone" class="mt-3 alert alert-success">Producto/s exportado/s satisfactoriamente</label>
     </div>
   </div>
 
+  <!--------------------------------------TRANSPORTES------------------------------------>
   <div *ngIf="toggleTransporte">
     <!--Detalles del transporte seleccionado-->
     <div class="row mt-3" *ngIf="transporte && toggleLst==false && toggleExport==false && toggleMod==false">
@@ -370,18 +391,21 @@
                 (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ver contenido</button>
               <button type="button" *ngIf="!toggleDscrptnshrt" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptnshrt=!toggleDscrptnshrt">Ocultar contenido</button>
-              <div *ngIf="!toggleDscrptnshrt" [innerHTML]="vals[i].language"></div>
+              <div *ngIf="!toggleDscrptnshrt && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></div>
+              <div *ngIf="!toggleDscrptnshrt && !triwee && !b2btri" [innerHTML]="vals[i].language"></div>
             </td>
             <td class="l-3" *ngIf="c=='description' && (vals[i].language!='[object Object]' && vals[i].language!=6 && vals[i].language!='')">
               <button type="button" *ngIf="toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptn=!toggleDscrptn">Ver contenido</button>
               <button type="button" *ngIf="!toggleDscrptn" class="btn btn-light btn-outline-primary btn-sm"
                 (click)="toggleDscrptn=!toggleDscrptn">Ocultar contenido</button>
-              <div *ngIf="!toggleDscrptn" [innerHTML]="vals[i].language"></div>
+              <div *ngIf="!toggleDscrptn && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></div>
+              <div *ngIf="!toggleDscrptn && !triwee && !b2btri" [innerHTML]="vals[i].language"></div>
             </td>
             <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) == -1 && vals[i]=='[object Object]'">Vacio</td>
             <td class="l-3" *ngIf="['name','meta_keywords','meta_title','description','description_short','meta_description','link_rewrite'].indexOf(c) > -1 && (vals[i].language=='[object Object]' || vals[i].language==6 || vals[i].language=='')">Vacio</td>
-            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6" [innerHTML]="vals[i].language"></td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6 && (triwee || b2btri)" [innerHTML]="vals[i].language[0]"></td>
+            <td class="l-3" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite'].indexOf(c) > -1 && vals[i].language!='[object Object]' && vals[i].language!=6 && !triwee && !b2btri" [innerHTML]="vals[i].language"></td>
             <td class="l-3" *ngIf="vals[i]=='1'">Si</td>
             <td class="l-3" *ngIf="vals[i]=='0'">No</td>
           </tr>
@@ -400,7 +424,7 @@
           <th>Campo</th>
           <th>Valor</th>
         </tr>
-        <tr *ngFor="let c of campos;let i = index" [formGroup]="myGroup">
+        <tr *ngFor="let c of campos;let i = index" [formGroup]="Transportistas">
           <td *ngIf="['available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1">{{c}}</td>
           <!--Campos que no se mostraran-->
           <td formGroupName="Transporte" *ngIf="['name','meta_keywords','meta_title','meta_description','link_rewrite','description','description_short','available_now','available_later','associations','manufacturer_name','quantity','id','id_manufacturer','id_supplier','id_shop_default','cache_default_attribute','position_in_category','date_add','date_upd'].indexOf(c) == -1 && vals[i]=='[object Object]'">
@@ -417,8 +441,7 @@
             <input id="{{c}}" name="{{c}}" type="text" class="form-control" value="{{vals[i].language}}" formControlName={{c}}/>
           </td>
           <td formGroupName="Transporte" *ngIf="['description','description_short'].indexOf(c) > -1 && vals[i].language!=6">
-            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language" >
-            </textarea>
+            <textarea id="{{c}}" name="{{c}}" type="text" class="w-100 form-control" style="height:200px;" formControlName={{c}} [innerHTML]="vals[i].language"></textarea>
           </td>
         </tr>
       </table>

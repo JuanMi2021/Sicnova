@@ -59,6 +59,7 @@ export class ApiComponent implements OnInit {
   origen:string="";
   destino:string="";
   selectedOpt:string="";
+  imagenes:any[]=[];
 
   myGroup = new FormGroup({
     Producto: new FormGroup({
@@ -120,7 +121,7 @@ export class ApiComponent implements OnInit {
       meta_title	: new FormControl(),
       link_rewrite	: new FormControl(),
       description	: new FormControl(),
-      description_short: new FormControl()
+      description_short: new FormControl(),
     })
   })
 
@@ -156,11 +157,11 @@ export class ApiComponent implements OnInit {
       uri="latam";
     }
     if (this.triwee) {
-      console.log("Cargando Producto de Latam");
+      console.log("Cargando Producto de triwee");
       uri="triwee";
     }
     if (this.b2btri) {
-      console.log("Cargando Producto de Latam");
+      console.log("Cargando Producto de b2b");
       uri="b2btri";
     }
     this.toggleLst=false;
@@ -174,12 +175,30 @@ export class ApiComponent implements OnInit {
         let activo=this.myGroup.controls.Producto.get("active");
         for (let key in this.campos) {
           this.myGroup.controls.Producto.get(this.campos[key])?.setValue("");
-          if(this.vals[key]!="[object Object]"){
-            this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
-          }else{
-            if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
-              this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+          if(this.triwee || this.b2btri){
+            if(this.vals[key]!="[object Object]"){
+              this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
+            }else{
+              if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=undefined){
+                if(Object.keys(this.vals[key]["language"][0])[0]!="@attributes")
+                  this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"][0]);
+                // this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+              }else{
+                this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+              }
             }
+          }else{
+            if(this.vals[key]!="[object Object]"){
+              this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
+            }else{
+              if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
+                this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]["language"]);
+              }
+            }
+          }
+          if(this.campos[key]=="associations"){
+            this.imagenes=this.vals[key]["images"]["image"];
+            console.log(this.imagenes)
           }
         }
         this.producto=resultado;
@@ -208,11 +227,11 @@ export class ApiComponent implements OnInit {
       uri="latam";
     }
     if (this.triwee) {
-      console.log("Cargando Producto de Latam");
+      console.log("Cargando Producto de triwee");
       uri="triwee";
     }
     if (this.b2btri) {
-      console.log("Cargando Producto de Latam");
+      console.log("Cargando Producto de b2b");
       uri="b2btri";
     }
     this.toggleLst=false;
