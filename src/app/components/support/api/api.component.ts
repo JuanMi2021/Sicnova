@@ -143,6 +143,7 @@ export class ApiComponent implements OnInit {
   
 
   getUnProducto(iden:string){
+    this.imagenes=[];
     let uri = "prueba";
     if (this.tienda) {
       console.log("Cargando Producto de Tienda");
@@ -196,9 +197,38 @@ export class ApiComponent implements OnInit {
               }
             }
           }
-          if(this.campos[key]=="associations"){
-            console.log(this.vals[key]["images"]["image"]);
-            for (let i = 0; i < this.vals[key]["images"]["image"].length; i++) {
+          if(this.campos[key]=="associations" && this.vals[key]["images"]["image"]!=undefined){
+            if(Object.keys(this.vals[key]["images"]["image"]).length > 1){
+              for (let i = 0; i < this.vals[key]["images"]["image"].length; i++) {
+                let texto="";
+                if(this.tienda){
+                  texto="http://tienda.sicnova3d.com/img/p/";
+                }
+                if(this.b2btri){
+                  texto="http://b2b.triwee.shop/img/p/";
+                }
+                if(this.distri){
+                  texto="http://distribuidor.sicnova3d.com/img/p/";
+                }
+                if(this.latam){
+                  texto="http://latam.sicnova3d.com/img/p/";
+                }
+                if(this.triwee){
+                  texto="http://triwee.shop/img/p/";
+                }
+                /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
+                if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
+                  texto="http://prueba.sicnova3d.com/img/p/";
+                }
+                /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                for (let j = 0; j < this.vals[key]["images"]["image"][i]["id"].length; j++) {
+                  texto+=this.vals[key]["images"]["image"][i]["id"][j] + "/";
+                }
+                texto+=this.vals[key]["images"]["image"][i]["id"] + ".jpg";
+                this.vals[key]["images"]["image"][i]=texto;
+              }
+              this.imagenes=this.vals[key]["images"]["image"];
+            }else{
               let texto="";
               if(this.tienda){
                 texto="http://tienda.sicnova3d.com/img/p/";
@@ -215,18 +245,17 @@ export class ApiComponent implements OnInit {
               if(this.triwee){
                 texto="http://triwee.shop/img/p/";
               }
+              /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
               if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
                 texto="http://prueba.sicnova3d.com/img/p/";
               }
-
-              for (let j = 0; j < this.vals[key]["images"]["image"][i]["id"].length; j++) {
-                texto+=this.vals[key]["images"]["image"][i]["id"][j] + "/";
+              /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+              for (let j = 0; j < this.vals[key]["images"]["image"]["id"].length; j++) {
+                texto+=this.vals[key]["images"]["image"]["id"][j] + "/";
               }
-              texto+=this.vals[key]["images"]["image"][i]["id"] + ".jpg";
-              this.vals[key]["images"]["image"][i]=texto;
+              texto+=this.vals[key]["images"]["image"]["id"] + ".jpg";
+              this.imagenes.push(texto);
             }
-            this.imagenes=this.vals[key]["images"]["image"];
-            console.log(this.imagenes)
           }
         }
         this.producto=resultado;
@@ -241,6 +270,7 @@ export class ApiComponent implements OnInit {
 
 
   getUnTransporte(iden:string){
+    /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
     let uri = "prueba";
     if (this.tienda) {
       console.log("Cargando Transporte de Tienda");
@@ -262,6 +292,8 @@ export class ApiComponent implements OnInit {
       console.log("Cargando Producto de b2b");
       uri="b2btri";
     }
+    /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.transporte==undefined || this.transporte["id"]!=iden) {
@@ -337,10 +369,12 @@ export class ApiComponent implements OnInit {
     if(cambiado){
       this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{
         if(resultado){
+          /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
           console.log("Se ha modificado")
+          /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
           this.getUnProducto(this.myGroup.controls.Producto.get("id")?.value)
         }
-      })
+      });
     }
   }
 
@@ -353,6 +387,7 @@ export class ApiComponent implements OnInit {
           }else{
             this.myGroup.controls.Producto.get(this.campos[key])?.setValue(this.vals[key]);
           }
+        /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */ 
         }else{
           if(this.vals[key]["language"]!="[object Object]" && this.vals[key]["language"]!=6){
             if(this.myGroup.controls.Producto.get(this.campos[key])?.value==this.vals[key]["language"]){
@@ -363,21 +398,19 @@ export class ApiComponent implements OnInit {
               )
             }
           }
+        /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
         }
       }
     }
   }
+
+  /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */ 
   showMygroup(){
     console.log(this.myGroup);
   }
+  /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
-  getProductosPrueba(){
-    this.tienda=false;
-    this.distri=false;
-    this.latam=false;
-    this.triwee=false;
-    this.b2btri=false;
-    
+  getAllProducts(recurso:string){
     if(this.toggleProducto){
       if(this.toggleExport==true){
         this.toggleExport=!this.toggleExport;
@@ -387,9 +420,18 @@ export class ApiComponent implements OnInit {
       this.toggleBuscar=0;
       this.toggleLst=true;
       this.productos=null;
-      this.servicio.damePaginas("prueba").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
-      this.servicio.getProductos("prueba",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+      this.servicio.damePaginas(recurso).subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
+      this.servicio.getProductos(recurso,this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
     }
+  }
+
+  getProductosPrueba(){
+    this.tienda=false;
+    this.distri=false;
+    this.latam=false;
+    this.triwee=false;
+    this.b2btri=false;
+    this.getAllProducts("prueba");
   };
 
   getTransportesPrueba(){
@@ -407,7 +449,9 @@ export class ApiComponent implements OnInit {
       this.toggleBuscar=0;
       this.toggleLst=true;
       this.transportes=null;
-      this.servicio.getTransportes("prueba").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+      this.servicio.getTransportes("prueba").subscribe((resultado)=>{
+        this.transportes=resultado;console.log(resultado)
+      });
     }
   };
 
@@ -419,18 +463,7 @@ export class ApiComponent implements OnInit {
       this.triwee=false;
       this.b2btri=false;
     }
-    if(this.toggleProducto){
-      if(this.toggleExport==true){
-        this.toggleExport=!this.toggleExport;
-        this.productoIds=[];
-      }
-      if(this.toggleBuscar==1)this.pagina=0;
-      this.toggleBuscar=0;
-      this.toggleLst=true;
-      this.productos=null;
-      this.servicio.damePaginas("tienda").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
-      this.servicio.getProductos("tienda",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
-    }
+    this.getAllProducts("tienda");
   };
 
   getTransportesTienda(){
@@ -444,7 +477,7 @@ export class ApiComponent implements OnInit {
     if(this.toggleTransporte){
       if(this.toggleExport==true){
         this.toggleExport=!this.toggleExport;
-      this.transporteIds=[];
+        this.transporteIds=[];
       }
       if(this.toggleBuscar==1)this.pagina=0;
       this.toggleBuscar=0;
@@ -462,18 +495,7 @@ export class ApiComponent implements OnInit {
       this.triwee=false;
       this.b2btri=false;
     }
-    if(this.toggleProducto){
-      if(this.toggleExport==true){
-        this.toggleExport=!this.toggleExport;
-        this.productoIds=[];
-      }
-      if(this.toggleBuscar==1)this.pagina=0;
-      this.toggleBuscar=0;
-      this.toggleLst=true;
-      this.productos=null;
-      this.servicio.damePaginas("distribuidor").subscribe((resultado)=>{this.paginas= Math.floor(Object.values(resultado).length/100)});
-      this.servicio.getProductos("distribuidor",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
-    }
+    this.getAllProducts("distribuidor");
   };
 
   getTransportesDistribuidor(){
@@ -506,18 +528,7 @@ export class ApiComponent implements OnInit {
       this.triwee=false;
       this.b2btri=false;
     }
-    if(this.toggleProducto){
-      if(this.toggleExport==true){
-        this.toggleExport=!this.toggleExport;
-        this.productoIds=[];
-      }
-      if(this.toggleBuscar==1)this.pagina=0;
-      this.toggleBuscar=0;
-      this.toggleLst=true;
-      this.productos=null;
-      this.servicio.damePaginas("latam").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
-      this.servicio.getProductos("latam",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
-    }
+    this.getAllProducts("latam");
   };
 
   getTransportesLatam(){
@@ -549,18 +560,7 @@ export class ApiComponent implements OnInit {
       this.triwee=true;
       this.b2btri=false;
     }
-    if(this.toggleProducto){
-      if(this.toggleExport==true){
-        this.toggleExport=!this.toggleExport;
-        this.productoIds=[];
-      }
-      if(this.toggleBuscar==1)this.pagina=0;
-      this.toggleBuscar=0;
-      this.toggleLst=true;
-      this.productos=null;
-      this.servicio.damePaginas("triwee").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
-      this.servicio.getProductos("triwee",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
-    }
+    this.getAllProducts("triwee");
   };
 
   getTransportesTriwee(){
@@ -580,7 +580,9 @@ export class ApiComponent implements OnInit {
       this.toggleBuscar=0;
       this.toggleLst=true;
       this.transportes=null;
-      this.servicio.getTransportes("triwee").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+      this.servicio.getTransportes("triwee").subscribe((resultado)=>{
+        this.transportes=resultado;console.log(resultado)
+      });
     }
   };
 
@@ -592,18 +594,7 @@ export class ApiComponent implements OnInit {
       this.triwee=false;
       this.b2btri=true;
     }
-    if(this.toggleProducto){
-      if(this.toggleExport==true){
-        this.toggleExport=!this.toggleExport;
-        this.productoIds=[];
-      }
-      if(this.toggleBuscar==1)this.pagina=0;
-      this.toggleBuscar=0;
-      this.toggleLst=true;
-      this.productos=null;
-      this.servicio.damePaginas("b2btri").subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)})
-      this.servicio.getProductos("b2btri",this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
-    }
+    this.getAllProducts("b2btri");
   };
 
   getTransportesB2B(){
@@ -623,7 +614,10 @@ export class ApiComponent implements OnInit {
       this.toggleBuscar=0;
       this.toggleLst=true;
       this.transportes=null;
-      this.servicio.getTransportes("b2btri").subscribe((resultado)=>{this.transportes=resultado;console.log(resultado)});
+      this.servicio.getTransportes("b2btri").subscribe((resultado)=>{
+        this.transportes=resultado;
+        console.log(resultado); // Eliminar despues de terminar con las pruebas
+      });
     }
   };
 
@@ -650,7 +644,7 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      console.log(info);
+      console.log(info); // Eliminar despues de terminar con las pruebas
       this.servicio.exportarProductos(info).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}});
     }
 
@@ -698,7 +692,7 @@ export class ApiComponent implements OnInit {
           this.toggleExport=false;
         }
       }
-      console.log(this.productoIds);
+      console.log(this.productoIds); // Eliminar despues de terminar con las pruebas
     }
     if(this.toggleTransporte){
       if (this.transporteIds.length==0 || this.transporteIds.indexOf(id)==-1) {
@@ -712,7 +706,7 @@ export class ApiComponent implements OnInit {
           this.toggleExport=false;
         }
       }
-      console.log(this.transporteIds);
+      console.log(this.transporteIds); // Eliminar despues de terminar con las pruebas
     }
   }
 
@@ -842,12 +836,16 @@ export class ApiComponent implements OnInit {
         dir="b2btri";
       }
       if(salida=="" || salida=="null"){
-        console.log("No hay datos de Busqueda");
+        console.log("No hay datos de Busqueda"); // Eliminar despues de terminar con las pruebas
         this.toggleBuscar=0;
       }else{
         this.productos="";
         this.pagina=0;
-        this.servicio.buscarProductos(dir,salida).subscribe((resultado)=>{this.productos=resultado;this.paginas=Object.values(resultado).length;console.log(resultado)})
+        this.servicio.buscarProductos(dir,salida).subscribe((resultado)=>{
+          this.productos=resultado;
+          this.paginas=Object.values(resultado).length;
+          console.log(resultado); // Eliminar despues de terminar con las pruebas
+        })
       }
   }
 
