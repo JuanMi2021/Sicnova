@@ -9,8 +9,8 @@
       (click)='getProductosDistribuidor();getTransportesDistribuidor();pagina=0'>Distribuidor</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosLatam();getTransportesLatam();pagina=0'>Latam</button>
-    <!-- <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
-      (click)='getProductosTriwee();getTransportesTriwee();pagina=0'>Triwee</button> -->
+    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+      (click)='getProductosTriwee();getTransportesTriwee();pagina=0'>Triwee</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosB2B();getTransportesB2B();pagina=0'>B2B</button>
     <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
@@ -71,13 +71,13 @@
         <tbody>
           <tr>
             <td class="l-3" class="align-middle">Imagenes</td>
-            <td *ngIf="this.imagenes.length>0" class="l-3 d-flex justify-content-evenly">
+            <td *ngIf="this.imagenes.length>0" class="l-3 d-flex justify-content-center flex-wrap">
               <a *ngFor="let im of this.imagenes;let i = index" href="{{im}}" target="_blank">
                 <img src="{{im}}" style="width:100px;height: 100px;" />
               </a>    
             </td>
             <td *ngIf="this.imagenes.length==0" class="l-3 d-flex align-middle">
-              <p>No tiene imagenes</p>
+                No tiene imagenes
             </td>
           </tr>
           <tr *ngFor="let c of campos;let i = index">
@@ -243,7 +243,7 @@
         </div>
         <!--Boton Exportar-->
         <div class="col-1">
-          <button class="btn btn-primary" *ngIf="toggleExport"
+          <button class="btn btn-primary" *ngIf="productoIds"
             (click)="toggleLst=!toggleLst;toggleExport=true;toggleDone=false;toggleExporting=false;">Exportar</button>
         </div>
       </div>
@@ -348,16 +348,16 @@
         <option *ngIf="!tienda" value="tienda">Tienda</option>
         <option *ngIf="!distri" value="distribuidor">Distribuidor</option>
         <option *ngIf="!latam" value="latam">Latam</option>
-        <!-- <option *ngIf="!triwee" value="triwee">Triwee</option> -->
+        <option *ngIf="!triwee" value="triwee">Triwee</option>
         <option *ngIf="!b2btri" value="b2btri">B2B</option>
         <option value="pruebas">Pruebas</option>
       </select>
       <div>
-        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="!toggleExporting" (click)="exprtrProductos();toggleExporting=true">Empezar</button>
+        <button class="col-1 btn btn-light btn-outline-primary btn-sm" *ngIf="!toggleExporting" (click)="exprtrProductos();toggleExporting=true;toggleDone=false">Empezar</button>
         <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==0 && !toggleExporting"
-        (click)='toggleDone=false;productoIds=[];toggleLst=!toggleLst;'>Volver a la lista</button>
+        (click)='toggleDone=false;productoIds=[];toggleExport=false;toggleLst=!toggleLst;'>Volver a la lista</button>
         <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
-        (click)='toggleDone=false;toggleExport=!toggleExport;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;'>Volver a la lista</button>
+        (click)='toggleDone=false;toggleExport=false;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;'>Volver a la lista</button>
       </div>
       <label *ngIf="toggleError" class="mt-3 alert alert-danger">No se ha seleccionado destino</label>
       <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
@@ -625,7 +625,7 @@
         <option *ngIf="!tienda" value="tienda">Tienda</option>
         <option *ngIf="!distri" value="distribuidor">Distribuidor</option>
         <option *ngIf="!latam" value="latam">Latam</option>
-        <!-- <option *ngIf="!triwee" value="triwee">Triwee</option> -->
+        <option *ngIf="!triwee" value="triwee">Triwee</option>
         <option *ngIf="!b2btri" value="b2btri">B2B</option>
       </select>
       <div>
@@ -640,4 +640,9 @@
       <label *ngIf="toggleDone" class="mt-3 alert alert-success">Transporte/s exportado/s satisfactoriamente</label>
     </div>
   </div>
+  <button *ngIf="toggleLst || toggleProducto" (click)='back2Top()' type="button" class="btn btn-floating btn-lg" id="btn-back-to-top" style="background-color:#1341cc;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="40" fill="white" class="bi bi-arrow-bar-up" viewBox="0 0 16 16">
+      <path fill-rule="even" d="M8 10a.5.5 0 0 0 .5-.5V3.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 3.707V9.5a.5.5 0 0 0 .5.5zm-7 2.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13a.5.5 0 0 1-.5-.5z"/>
+    </svg>
+  </button>
 </div>

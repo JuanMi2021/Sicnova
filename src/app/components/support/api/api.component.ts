@@ -143,7 +143,6 @@ export class ApiComponent implements OnInit {
   
 
   getUnProducto(iden:string){
-    this.imagenes=[];
     let uri = "prueba";
     if (this.tienda) {
       console.log("Cargando Producto de Tienda");
@@ -168,8 +167,10 @@ export class ApiComponent implements OnInit {
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
+      this.imagenes=[];
       this.producto=undefined;
       this.servicio.getProducto(iden,uri).subscribe((resultado)=>{
+        console.log(resultado)
         this.campos=Object.keys(resultado);
         this.vals=Object.values(resultado);
         let controles=this.myGroup.controls.Producto
@@ -259,15 +260,18 @@ export class ApiComponent implements OnInit {
           }
         }
         this.producto=resultado;
-        window.scroll({
-          top: 0,
-          left: 0,
-          behavior: 'smooth'
-        });
+        this.back2Top();
       });
     }
   };
 
+  back2Top(){
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }
 
   getUnTransporte(iden:string){
     /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
@@ -683,28 +687,28 @@ export class ApiComponent implements OnInit {
     if(this.toggleProducto){
       if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
         this.productoIds.push(id);
-        if (this.toggleExport==false) {
-          this.toggleExport=!this.toggleExport;
-        }
+        // if (this.toggleExport==false) {
+        //   this.toggleExport=!this.toggleExport;
+        // }
       }else{
         this.productoIds.splice(this.productoIds.indexOf(id),1);
-        if(this.productoIds.length==0){
-          this.toggleExport=false;
-        }
+        // if(this.productoIds.length==0){
+        //   this.toggleExport=false;
+        // }
       }
       console.log(this.productoIds); // Eliminar despues de terminar con las pruebas
     }
     if(this.toggleTransporte){
       if (this.transporteIds.length==0 || this.transporteIds.indexOf(id)==-1) {
         this.transporteIds.push(id);
-        if (this.toggleExport==false) {
-          this.toggleExport=!this.toggleExport;
-        }
+        // if (this.toggleExport==false) {
+        //   this.toggleExport=!this.toggleExport;
+        // }
       }else{
         this.transporteIds.splice(this.transporteIds.indexOf(id),1);
-        if(this.transporteIds.length==0){
-          this.toggleExport=false;
-        }
+        // if(this.transporteIds.length==0){
+        //   this.toggleExport=false;
+        // }
       }
       console.log(this.transporteIds); // Eliminar despues de terminar con las pruebas
     }
