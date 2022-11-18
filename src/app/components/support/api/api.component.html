@@ -211,7 +211,9 @@
 
       <!--Aqui se muestran todos los productos-->
       <h2 class="mt-3 col-5">Listado de productos</h2>
-      <p *ngIf="!productos">Cargando</p>
+      <p *ngIf="!productos && !toggleError && !toggleNotFound">Cargando</p>
+      <p *ngIf="toggleError">Se ha producido un error</p>
+      <p *ngIf="toggleNotFound">No se han encontrado productos</p>
       <div *ngIf="productos" class="mt-3 col-7 row">
         <!--Paginado de Listado de todos los productos-->
         <div *ngIf="toggleBuscar==0" class="col text-end">
@@ -319,7 +321,9 @@
         <p [innerHTML]="productos"></p>
       -->
       <h2 class="mt-3">Listado de productos</h2>
-      <p *ngIf="!productos">Cargando</p>
+      <p *ngIf="!productos && !toggleError && !toggleNotFound">Cargando</p>
+      <p *ngIf="toggleError">Se ha producido un error</p>
+      <p *ngIf="toggleNotFound">No se han encontrado productos</p>
       <table class="table" *ngIf="productos">
         <tr>
           <th *ngIf="productos" scope="col">ID</th>

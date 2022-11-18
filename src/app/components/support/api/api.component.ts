@@ -1,10 +1,10 @@
-import { Attribute, Component, ViewChild, ViewEncapsulation, OnInit } from '@angular/core';
+import { Attribute, Component, ViewChild, ViewEncapsulation, OnInit, ErrorHandler } from '@angular/core';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { CrudService } from '../../../services/crud.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { isIdentifier, Node } from '@angular/compiler';
-import { count, toArray } from 'rxjs';
+import { catchError, count, retry, toArray } from 'rxjs';
 
 
 @Component({
@@ -29,6 +29,7 @@ export class ApiComponent implements OnInit {
   toggleExporting:boolean=false;
   toggleLst:boolean=false;
   toggleMod:boolean=false;
+  toggleNotFound:boolean=false;
   toggleProducto:boolean=false;
   toggleTransporte:boolean=false;
   tienda:boolean=false;
@@ -415,6 +416,8 @@ export class ApiComponent implements OnInit {
   /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
   getAllProducts(recurso:string){
+    this.toggleError=false;
+    this.toggleNotFound=false;
     if(this.toggleProducto){
       if(this.toggleExport==true){
         this.toggleExport=!this.toggleExport;
@@ -424,8 +427,24 @@ export class ApiComponent implements OnInit {
       this.toggleBuscar=0;
       this.toggleLst=true;
       this.productos=null;
+      
       this.servicio.damePaginas(recurso).subscribe((resultado)=>{this.paginas=Math.floor(Object.values(resultado).length/100)});
-      this.servicio.getProductos(recurso,this.pagina).subscribe((resultado)=>{this.productos=resultado;console.log(resultado)});
+      this.servicio.getProductos(recurso,this.pagina).subscribe((resultado)=>{
+        if(resultado==null){
+          this.productos=resultado;console.log(resultado);
+        }else{
+          this.productos=resultado;console.log(resultado);
+        }
+      
+      },
+      (err)=>{
+        if(err.name=="HttpErrorResponse"){
+          this.toggleError=true
+          console.log(this.productos)
+          console.log(this.toggleNotFound)
+          console.log(this.toggleError)
+        }
+      });
     }
   }
 
@@ -789,6 +808,9 @@ export class ApiComponent implements OnInit {
   }
 
   buscarProductos(){
+    this.productos=null;
+    this.toggleError=false;
+    this.toggleNotFound=false;
     this.toggleBuscar=1;
     var salida:string="";
 			if(this.searchMinId!="" && this.searchMaxId!=""){
@@ -846,9 +868,13 @@ export class ApiComponent implements OnInit {
         this.productos="";
         this.pagina=0;
         this.servicio.buscarProductos(dir,salida).subscribe((resultado)=>{
-          this.productos=resultado;
-          this.paginas=Object.values(resultado).length;
-          console.log(resultado); // Eliminar despues de terminar con las pruebas
+          if(resultado!=null){
+            this.productos=resultado;
+            this.paginas=Object.values(resultado).length;
+            console.log(resultado); // Eliminar despues de terminar con las pruebas
+          }else{
+            this.toggleNotFound=true
+          }
         })
       }
   }
