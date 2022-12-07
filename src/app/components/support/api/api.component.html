@@ -285,7 +285,7 @@
             <td class="l-3 align-middle" *ngIf="!triwee && !b2btri">{{pr["name"]["language"]}}</td>
             <td class="l-3 align-middle">{{pr["reference"]}}</td>
             <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-                (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+                (click)='getUnProducto(pr["id"]);back2Top();'>Ver Datos</button></td>
             <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
             </td>
           </tr>
@@ -308,7 +308,7 @@
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["name"]["language"]}}</td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{pr["reference"]}}</td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-                (click)='getUnProducto(pr["id"])'>Ver Datos</button></td>
+                (click)='getUnProducto(pr["id"]);back2Top();'>Ver Datos</button></td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(pr["id"])' />
             </td>
           </tr>
@@ -332,7 +332,7 @@
         <tr *ngFor="let pr of productos;">
           <td class="l-3">{{pr["@attributes"]["id"]}}</td>
           <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-              (click)='getUnProducto(pr["@attributes"]["id"])'>Ver Datos</button></td>
+              (click)='getUnProducto(pr["@attributes"]["id"]);back2Top();'>Ver Datos</button></td>
         </tr>
       </table>
     </div>
@@ -363,7 +363,8 @@
         <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
         (click)='toggleDone=false;toggleExport=false;productoIds=[];toggleLst=!toggleLst;toggleBuscar=1;'>Volver a la lista</button>
       </div>
-      <label *ngIf="toggleError" class="mt-3 alert alert-danger">No se ha seleccionado destino</label>
+      <!-- <label *ngIf="toggleError" class="mt-3 alert alert-danger">No se ha seleccionado destino</label> -->
+      <label *ngIf="toggleError" class="mt-3 alert alert-danger">Se ha producido un error</label>
       <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
       <label *ngIf="toggleDone" class="mt-3 alert alert-success">Producto/s exportado/s satisfactoriamente</label>
     </div>
@@ -564,7 +565,7 @@
             <td class="l-3 align-middle">{{tr["active"]}}</td>
             <td class="l-3 align-middle">{{tr["is_free"]}}</td>
             <td colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-                (click)='getUnTransporte(tr["id"])'>Ver Datos</button></td>
+                (click)='getUnTransporte(tr["id"]);back2Top();'>Ver Datos</button></td>
             <td class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(tr["id"])' />
             </td>
           </tr>
@@ -587,7 +588,7 @@
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{tr["name"]["language"]}}</td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3 align-middle">{{tr["reference"]}}</td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" colspan="2"><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-                (click)='getUnTransporte(tr["id"])'>Ver Datos</button></td>
+                (click)='getUnTransporte(tr["id"]);back2Top();'>Ver Datos</button></td>
             <td *ngIf="i>=pagina*100 && (i<(pagina+1)*100)" class="l-3"><input type="checkbox" name="ids" class="form-check-input" (change)='updtSelected(tr["id"])' />
             </td>
           </tr>
@@ -609,7 +610,7 @@
         <tr *ngFor="let tr of transportes;">
           <td class="l-3">{{tr["@attributes"]["id"]}}</td>
           <td><button type="submit" class="btn btn-light btn-outline-primary btn-sm"
-              (click)='getUnTransporte(tr["@attributes"]["id"])'>Ver Datos</button></td>
+              (click)='getUnTransporte(tr["@attributes"]["id"]);back2Top();'>Ver Datos</button></td>
         </tr>
       </table>
     </div>
@@ -639,7 +640,8 @@
         <button class="col-2 btn btn-light btn-outline-primary btn-sm" *ngIf="toggleBuscar==2 && !toggleExporting"
         (click)='toggleExport=!toggleExport;transporteIds=[];toggleLst=!toggleLst;toggleBuscar=1;toggleDone=false'>Volver a la lista</button>
       </div>
-      <label *ngIf="toggleError" class="mt-3 alert alert-dantger">No se ha seleccionado destino</label>
+      <!-- <label *ngIf="toggleError" class="mt-3 alert alert-danger">No se ha seleccionado destino</label> -->
+      <label *ngIf="toggleError" class="mt-3 alert alert-danger">Se ha producido un error</label>
       <label *ngIf="toggleExporting" class="mt-3 alert alert-warning">Procesando peticion...</label>
       <label *ngIf="toggleDone" class="mt-3 alert alert-success">Transporte/s exportado/s satisfactoriamente</label>
     </div>
