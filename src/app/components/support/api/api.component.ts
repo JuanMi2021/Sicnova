@@ -608,13 +608,14 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
+      console.log("info:"); // Eliminar despues de terminar con las pruebas
       console.log(info); // Eliminar despues de terminar con las pruebas
       this.servicio.exportarProductos(info,url).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}},
       (err)=>{
         if(err.name=="HttpErrorResponse"){
           this.toggleError=true
           this.toggleExporting=false
-          console.log(err.error.text);
+          console.log(err);
         }
       });
     }
@@ -698,23 +699,23 @@ export class ApiComponent implements OnInit {
   }
 
   getPagina(){
-    if (this.tienda){this.getProductosTienda()}
-    if(this.distri){this.getProductosDistribuidor()}
-    if(this.latam){this.getProductosLatam()}
-    if(this.triwee){this.getProductosTriwee()}
-    if(this.b2btri){this.getProductosB2B()}
+    if (this.tienda){this.getProductosTienda();}
+    if(this.distri){this.getProductosDistribuidor();}
+    if(this.latam){this.getProductosLatam();}
+    if(this.triwee){this.getProductosTriwee();}
+    if(this.b2btri){this.getProductosB2B();}
   }
 
   getPrimera(){
     this.pagina=0;
-    if (this.tienda) {this.getProductosTienda()}
-    if(this.distri){this.getProductosDistribuidor()}
-    if(this.latam){this.getProductosLatam()}
-    if(this.triwee){this.getProductosTriwee()}
-    if(this.b2btri){this.getProductosB2B()}
+    if (this.tienda) {this.getProductosTienda();}
+    if(this.distri){this.getProductosDistribuidor();}
+    if(this.latam){this.getProductosLatam();}
+    if(this.triwee){this.getProductosTriwee();}
+    if(this.b2btri){this.getProductosB2B();}
   }
 
-  UltPagBuscar(paginas:number){    return Math.floor(paginas/100);  }
+  UltPagBuscar(paginas:number){return Math.floor(paginas/100);}
 
   buscarProductos(){
     this.productos=null;
@@ -739,7 +740,7 @@ export class ApiComponent implements OnInit {
 			if(salida!="null"){
 				if(this.searchRef!=""){
 					if(salida.length>0)salida+="%";
-				salida+="ref:"+this.searchRef;
+				  salida+="ref:"+this.searchRef;
 				}
 				if(this.searchName!=""){
 					if(salida.length>0)salida+="%";
@@ -755,11 +756,11 @@ export class ApiComponent implements OnInit {
 				}
 			}
       let dir="";
-      if (this.tienda) {dir="tienda"}
-      if (this.distri) {dir="distribuidor"}
-      if (this.latam) {dir="latam"}
-      if (this.triwee) {dir="triwee"}
-      if (this.b2btri) {dir="b2btri"}
+      if (this.tienda) {dir="tienda";}
+      if (this.distri) {dir="distribuidor";}
+      if (this.latam) {dir="latam";}
+      if (this.triwee) {dir="triwee";}
+      if (this.b2btri) {dir="b2btri";}
       if(salida=="" || salida=="null"){
         console.log("No hay datos de Busqueda"); // Eliminar despues de terminar con las pruebas
         this.toggleBuscar=0;
@@ -772,7 +773,7 @@ export class ApiComponent implements OnInit {
             this.paginas=Object.values(resultado).length;
             console.log(resultado); // Eliminar despues de terminar con las pruebas
           }else{
-            this.toggleNotFound=true
+            this.toggleNotFound=true;
           }
         })
       }
