@@ -43,8 +43,6 @@ export class CrudService {
   getProductos(direccion:string,pag:number){
     this.url=addUrl(direccion);
     let salida;
-    //const headers = new HttpHeaders().set('Content-Type', 'text/plain; charset=utf-8');
-    //salida = this.http.get(`${this.url}`,{headers, responseType:'text' });
     salida = this.http.get(`${this.url}callTiendas.php?uri=${direccion}&pag=${pag}`);
     return salida;
   }
