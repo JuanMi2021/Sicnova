@@ -3,45 +3,45 @@
   <!-- <a href="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" download="imagen'.$contador.'"><img src="http://tienda.sicnova3d.com/img/p/6/6/6/2/6662.jpg" style="width:50%;" /></a> -->
 <!-- Botonera de seleccion de datos -->
   <div class="col-md-12 text-center">
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="tienda" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosTienda();getTransportesTienda();pagina=0'>Tienda</button>
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="distri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosDistribuidor();getTransportesDistribuidor();pagina=0'>Distribuidor</button>
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosLatam();getTransportesLatam();pagina=0'>Latam</button>
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="triwee" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosTriwee();getTransportesTriwee();pagina=0'>Triwee</button>
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="b2b" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosB2B();getTransportesB2B();pagina=0'>B2B</button>
-    <button class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button id="prueba" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='getProductosPrueba();getTransportesPrueba();pagina=0'>Prueba</button>
   </div>
 
   <div *ngIf="this.tienda || this.distri || this.latam || this.triwee || this.b2btri" class="col-md-12 text-center">
-    <button *ngIf="tienda" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="tienda" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosTienda()'>Productos</button>
-    <button *ngIf="distri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="distri" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosDistribuidor()'>Productos</button>
-    <button *ngIf="latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="latam" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosLatam()'>Productos</button>
-    <button *ngIf="triwee" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="triwee" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosTriwee()'>Productos</button>
-    <button *ngIf="b2btri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="b2btri" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosB2B()'>Productos</button>
-    <button *ngIf="!tienda && !distri && !latam && !triwee && !b2btri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="!tienda && !distri && !latam && !triwee && !b2btri" id="produc" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=true;toggleTransporte=false;pagina=0;getProductosPrueba()'>Productos</button>
 
-    <button *ngIf="tienda" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="tienda" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesTienda()'>Transportes</button>
-    <button *ngIf="distri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="distri" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesDistribuidor()'>Transportes</button>
-    <button *ngIf="latam" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="latam" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesLatam()'>Transportes</button>
-    <button *ngIf="triwee" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="triwee" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesTriwee()'>Transportes</button>
-    <button *ngIf="b2btri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="b2btri" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesB2B()'>Transportes</button>
-    <button *ngIf="!tienda && !distri && !latam  && !triwee && !b2btri" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
+    <button *ngIf="!tienda && !distri && !latam  && !triwee && !b2btri" id="transport" class="col-2 btn btn-light btn-outline-primary btn-sm m-1"
       (click)='toggleProducto=false;toggleTransporte=true;getTransportesPrueba()'>Transportes</button>
   </div>
   

@@ -47,6 +47,7 @@ export class ApiComponent implements OnInit {
   esFalso:any;
   productoIds:any[]=[];
   transporteIds:any[]=[];
+  imagenes:any[]=[];
   //variables number
   paginas: number = 0;
   pagina: number = 0;
@@ -60,7 +61,6 @@ export class ApiComponent implements OnInit {
   origen:string="";
   destino:string="";
   selectedOpt:string="";
-  imagenes:any[]=[];
 
   myGroup = new FormGroup({
     Producto: new FormGroup({
@@ -275,26 +275,11 @@ export class ApiComponent implements OnInit {
   getUnTransporte(iden:string){
     /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
     let uri = "prueba";
-    if (this.tienda) {
-      console.log("Cargando Transporte de Tienda");
-      uri="tienda";
-    }
-    if (this.distri) {
-      console.log("Cargando Transporte de Distribuidor");
-      uri="distribuidor";
-    }
-    if (this.latam) {
-      console.log("Cargando Transporte de Latam");
-      uri="latam";
-    }
-    if (this.triwee) {
-      console.log("Cargando Producto de triwee");
-      uri="triwee";
-    }
-    if (this.b2btri) {
-      console.log("Cargando Producto de b2b");
-      uri="b2btri";
-    }
+    if (this.tienda) {uri="tienda"}
+    if (this.distri) {uri="distribuidor"}
+    if (this.latam) {uri="latam"}
+    if (this.triwee) {uri="triwee"}
+    if (this.b2btri) {uri="b2btri"}
     /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
     this.toggleLst=false;
@@ -403,7 +388,23 @@ export class ApiComponent implements OnInit {
   }
   /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
+  activarBoton(){
+    let actual=document.getElementsByClassName("activo");
+    while(actual.length>0){
+      actual[0].classList.remove("activo")
+    }
+
+
+    if(this.tienda)document.getElementById("tienda")?.classList.toggle("activo");
+    if(this.distri)document.getElementById("distri")?.classList.toggle("activo");
+    if(this.latam)document.getElementById("latam")?.classList.toggle("activo");
+    if(this.triwee)document.getElementById("triwee")?.classList.toggle("activo");
+    if(this.b2btri)document.getElementById("b2b")?.classList.toggle("activo");
+  }
+
   getAllProducts(recurso:string){
+    let pr=document.getElementById("produc");
+    this.activarBoton();
     this.toggleError=false;
     this.toggleNotFound=false;
     if(this.toggleProducto){
@@ -419,6 +420,11 @@ export class ApiComponent implements OnInit {
       this.servicio.getProductos(recurso,this.pagina).subscribe((resultado)=>{
         if(resultado==null){this.productos=resultado;}
         else{this.productos=resultado;}
+        if(this.toggleProducto){
+          console.log("producto activo")
+          let pr=document.getElementById("produc");
+          pr?.classList.add("activo")
+        }
       },
       (err)=>{
         if(err.name=="HttpErrorResponse"){
@@ -430,6 +436,8 @@ export class ApiComponent implements OnInit {
   }
 
   getAllTransports(recurso:string){
+    let tr=document.getElementById("transport")
+    this.activarBoton();
     this.toggleError=false;
     this.toggleNotFound=false;
     if(this.toggleTransporte){
@@ -444,6 +452,11 @@ export class ApiComponent implements OnInit {
       this.servicio.getTransportes(recurso).subscribe((resultado)=>{
         if(resultado==null){this.transportes=resultado;}
         else{this.transportes=resultado;}
+        if(this.toggleTransporte){
+          console.log("transporte activo")
+          let tr=document.getElementById("transport");
+          tr?.classList.add("activo")
+        }
       },
       (err)=>{
         if(err.name=="HttpErrorResponse"){
@@ -461,6 +474,7 @@ export class ApiComponent implements OnInit {
     this.triwee=false;
     this.b2btri=false;
     this.getAllProducts("prueba");
+    document.getElementById("prueba")?.classList.add("activo");
   };
 
   getTransportesPrueba(){
@@ -470,6 +484,7 @@ export class ApiComponent implements OnInit {
     this.triwee=false;
     this.b2btri=false;
     this.getAllTransports("prueba");
+    document.getElementById("prueba")?.classList.add("activo");
   };
 
   getProductosTienda(){
@@ -787,7 +802,7 @@ export class ApiComponent implements OnInit {
     this.searchRef="";
     this.searchActive="";
     
-    if (this.tienda) {this.getProductosTienda()}
+    if(this.tienda){this.getProductosTienda()}
     if(this.distri){this.getProductosDistribuidor()}
     if(this.latam){this.getProductosLatam()}
     if(this.triwee){this.getProductosTriwee()}
