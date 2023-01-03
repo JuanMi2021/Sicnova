@@ -143,26 +143,11 @@ export class ApiComponent implements OnInit {
 
   getUnProducto(iden:string){
     let uri = "prueba";
-    if (this.tienda) {
-      console.log("Cargando Producto de Tienda");
-      uri="tienda";
-    }
-    if (this.distri) {
-      console.log("Cargando Producto de Distribuidor");
-      uri="distribuidor";
-    }
-    if (this.latam) {
-      console.log("Cargando Producto de Latam");
-      uri="latam";
-    }
-    if (this.triwee) {
-      console.log("Cargando Producto de triwee");
-      uri="triwee";
-    }
-    if (this.b2btri) {
-      console.log("Cargando Producto de b2b");
-      uri="b2btri";
-    }
+    if (this.tienda) {uri="tienda";}
+    if (this.distri) {uri="distribuidor";}
+    if (this.latam) {uri="latam";}
+    if (this.triwee) {uri="triwee";}
+    if (this.b2btri) {uri="b2btri";}
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
     if (this.producto==undefined || this.producto["id"]!=iden) {
@@ -198,63 +183,45 @@ export class ApiComponent implements OnInit {
             }
           }
           if(this.campos[key]=="associations" && this.vals[key]["images"]["image"]!=undefined){
+            let texto="";
+            if(this.tienda){
+              texto="http://tienda.sicnova3d.com/img/p/";
+            }
+            if(this.b2btri){
+              texto="http://b2b.triwee.shop/img/p/";
+            }
+            if(this.distri){
+              texto="http://distribuidor.sicnova3d.com/img/p/";
+            }
+            if(this.latam){
+              texto="http://latam.sicnova3d.com/img/p/";
+            }
+            if(this.triwee){
+              texto="http://triwee.shop/img/p/";
+            }
+            /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
+            if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
+              texto="http://prueba.sicnova3d.com/img/p/";
+            }
+            /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+            
             if(Object.keys(this.vals[key]["images"]["image"]).length > 1){
               for (let i = 0; i < this.vals[key]["images"]["image"].length; i++) {
-                let texto="";
-                if(this.tienda){
-                  texto="http://tienda.sicnova3d.com/img/p/";
-                }
-                if(this.b2btri){
-                  texto="http://b2b.triwee.shop/img/p/";
-                }
-                if(this.distri){
-                  texto="http://distribuidor.sicnova3d.com/img/p/";
-                }
-                if(this.latam){
-                  texto="http://latam.sicnova3d.com/img/p/";
-                }
-                if(this.triwee){
-                  texto="http://triwee.shop/img/p/";
-                }
-                /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
-                if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
-                  texto="http://prueba.sicnova3d.com/img/p/";
-                }
-                /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+                let aux=texto;
                 for (let j = 0; j < this.vals[key]["images"]["image"][i]["id"].length; j++) {
-                  texto+=this.vals[key]["images"]["image"][i]["id"][j] + "/";
+                  aux+=this.vals[key]["images"]["image"][i]["id"][j] + "/";
                 }
-                texto+=this.vals[key]["images"]["image"][i]["id"] + ".jpg";
-                this.vals[key]["images"]["image"][i]=texto;
+                aux+=this.vals[key]["images"]["image"][i]["id"] + ".jpg";
+                this.vals[key]["images"]["image"][i]=aux;
               }
               this.imagenes=this.vals[key]["images"]["image"];
             }else{
-              let texto="";
-              if(this.tienda){
-                texto="http://tienda.sicnova3d.com/img/p/";
-              }
-              if(this.b2btri){
-                texto="http://b2b.triwee.shop/img/p/";
-              }
-              if(this.distri){
-                texto="http://distribuidor.sicnova3d.com/img/p/";
-              }
-              if(this.latam){
-                texto="http://latam.sicnova3d.com/img/p/";
-              }
-              if(this.triwee){
-                texto="http://triwee.shop/img/p/";
-              }
-              /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
-              if(!this.latam && !this.tienda && !this.distri && !this.b2btri && !this.triwee){
-                texto="http://prueba.sicnova3d.com/img/p/";
-              }
-              /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+              let aux=texto;
               for (let j = 0; j < this.vals[key]["images"]["image"]["id"].length; j++) {
-                texto+=this.vals[key]["images"]["image"]["id"][j] + "/";
+                aux+=this.vals[key]["images"]["image"]["id"][j] + "/";
               }
-              texto+=this.vals[key]["images"]["image"]["id"] + ".jpg";
-              this.imagenes.push(texto);
+              aux+=this.vals[key]["images"]["image"]["id"] + ".jpg";
+              this.imagenes.push(aux);
             }
           }
         }
@@ -273,14 +240,12 @@ export class ApiComponent implements OnInit {
   }
 
   getUnTransporte(iden:string){
-    /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
     let uri = "prueba";
     if (this.tienda) {uri="tienda"}
     if (this.distri) {uri="distribuidor"}
     if (this.latam) {uri="latam"}
     if (this.triwee) {uri="triwee"}
     if (this.b2btri) {uri="b2btri"}
-    /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
     this.toggleLst=false;
     if(this.toggleBuscar==1)this.toggleBuscar=2;
@@ -290,8 +255,8 @@ export class ApiComponent implements OnInit {
         console.log(resultado);
         this.campos=Object.keys(resultado);
         this.vals=Object.values(resultado);
-        let controles=this.Transportistas.controls.Transporte
-        let activo=this.Transportistas.controls.Transporte.get("active");
+        // let controles=this.Transportistas.controls.Transporte
+        // let activo=this.Transportistas.controls.Transporte.get("active");
         for (let key in this.campos) {
           this.Transportistas.controls.Transporte.get(this.campos[key])?.setValue("");
           if(this.vals[key]!="[object Object]"){
@@ -347,9 +312,6 @@ export class ApiComponent implements OnInit {
     if(cambiado){
       this.servicio.modificarProducto(uri,this.myGroup).subscribe((resultado)=>{
         if(resultado){
-          /**-----------------------------------------------------Elimnar despues de terminar las pruebas----------------------------------------------------- */
-          console.log("Se ha modificado")
-          /**^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^Elimnar despues de terminar las pruebas^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
           this.getUnProducto(this.myGroup.controls.Producto.get("id")?.value)
         }
       });
@@ -394,7 +356,6 @@ export class ApiComponent implements OnInit {
       actual[0].classList.remove("activo")
     }
 
-
     if(this.tienda)document.getElementById("tienda")?.classList.toggle("activo");
     if(this.distri)document.getElementById("distri")?.classList.toggle("activo");
     if(this.latam)document.getElementById("latam")?.classList.toggle("activo");
@@ -421,7 +382,6 @@ export class ApiComponent implements OnInit {
         if(resultado==null){this.productos=resultado;}
         else{this.productos=resultado;}
         if(this.toggleProducto){
-          console.log("producto activo")
           let pr=document.getElementById("produc");
           pr?.classList.add("activo")
         }
@@ -453,7 +413,6 @@ export class ApiComponent implements OnInit {
         if(resultado==null){this.transportes=resultado;}
         else{this.transportes=resultado;}
         if(this.toggleTransporte){
-          console.log("transporte activo")
           let tr=document.getElementById("transport");
           tr?.classList.add("activo")
         }
@@ -623,8 +582,6 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      console.log("info:"); // Eliminar despues de terminar con las pruebas
-      console.log(info); // Eliminar despues de terminar con las pruebas
       this.servicio.exportarProductos(info,url).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}},
       (err)=>{
         if(err.name=="HttpErrorResponse"){
@@ -687,7 +644,6 @@ export class ApiComponent implements OnInit {
         //   this.toggleExport=false;
         // }
       }
-      console.log(this.productoIds); // Eliminar despues de terminar con las pruebas
     }
     if(this.toggleTransporte){
       if (this.transporteIds.length==0 || this.transporteIds.indexOf(id)==-1) {
@@ -706,7 +662,7 @@ export class ApiComponent implements OnInit {
   }
 
   getUltima(){
-    if (this.tienda){this.pagina=this.paginas;this.getProductosTienda();}
+    if(this.tienda){this.pagina=this.paginas;this.getProductosTienda();}
     if(this.distri){this.pagina=this.paginas;this.getProductosDistribuidor();}
     if(this.latam){this.pagina=this.paginas;this.getProductosLatam();}
     if(this.triwee){this.pagina=this.paginas;this.getProductosTriwee();}
@@ -714,7 +670,7 @@ export class ApiComponent implements OnInit {
   }
 
   getPagina(){
-    if (this.tienda){this.getProductosTienda();}
+    if(this.tienda){this.getProductosTienda();}
     if(this.distri){this.getProductosDistribuidor();}
     if(this.latam){this.getProductosLatam();}
     if(this.triwee){this.getProductosTriwee();}
@@ -723,7 +679,7 @@ export class ApiComponent implements OnInit {
 
   getPrimera(){
     this.pagina=0;
-    if (this.tienda) {this.getProductosTienda();}
+    if(this.tienda){this.getProductosTienda();}
     if(this.distri){this.getProductosDistribuidor();}
     if(this.latam){this.getProductosLatam();}
     if(this.triwee){this.getProductosTriwee();}
