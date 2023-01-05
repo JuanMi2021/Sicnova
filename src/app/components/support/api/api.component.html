@@ -245,7 +245,7 @@
         </div>
         <!--Boton Exportar-->
         <div class="col-1">
-          <button class="btn btn-primary" *ngIf="productoIds"
+          <button id="exprtProduct" class="btn btn-primary" disabled *ngIf="productoIds"
             (click)="toggleLst=!toggleLst;toggleExport=true;toggleDone=false;toggleExporting=false;">Exportar</button>
         </div>
       </div>
@@ -539,7 +539,7 @@
         </div> -->
         <!--Boton Exportar-->
         <div class="col-1">
-          <button class="btn btn-primary" *ngIf="toggleExport"
+          <button id="exprtTransport" class="btn btn-primary" disabled *ngIf="toggleExport"
             (click)="toggleLst=!toggleLst;toggleDone=false;toggleExporting=false;toggleExport=true;">Exportar</button>
         </div>
       </div>

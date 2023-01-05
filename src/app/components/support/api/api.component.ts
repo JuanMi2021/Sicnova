@@ -159,7 +159,7 @@ export class ApiComponent implements OnInit {
         this.vals=Object.values(resultado);
         let controles=this.myGroup.controls.Producto
         let activo=this.myGroup.controls.Producto.get("active");
-        for (let key in this.campos) {
+        for(let key in this.campos){
           this.myGroup.controls.Producto.get(this.campos[key])?.setValue("");
           if(this.triwee || this.b2btri){
             if(this.vals[key]!="[object Object]"){
@@ -582,7 +582,7 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.exportarProductos(info,url).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}},
+      this.servicio.exportarProductos(info,url).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true;this.exprtFinalizada();}},
       (err)=>{
         if(err.name=="HttpErrorResponse"){
           this.toggleError=true
@@ -618,7 +618,7 @@ export class ApiComponent implements OnInit {
     }else{
       this.toggleBuscar=0;
       this.toggleError=false;
-      this.servicio.exportarTransportes(info,this.selectedOpt).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true}},
+      this.servicio.exportarTransportes(info,this.selectedOpt).subscribe((resultado)=>{console.log(resultado);if(typeof resultado=="object"){this.toggleExporting=false;this.toggleDone=true;this.exprtFinalizada()}},
       (err)=>{
         if(err.name=="HttpErrorResponse"){
           this.toggleError=true;
@@ -635,27 +635,31 @@ export class ApiComponent implements OnInit {
     if(this.toggleProducto){
       if (this.productoIds.length==0 || this.productoIds.indexOf(id)==-1) {
         this.productoIds.push(id);
+        document.getElementById("exprtProduct")?.removeAttribute("disabled")
         // if (this.toggleExport==false) {
         //   this.toggleExport=!this.toggleExport;
         // }
       }else{
         this.productoIds.splice(this.productoIds.indexOf(id),1);
-        // if(this.productoIds.length==0){
+        if(this.productoIds.length==0){
+          document.getElementById("exprtProduct")?.setAttribute("disabled","")
         //   this.toggleExport=false;
-        // }
+        }
       }
     }
     if(this.toggleTransporte){
       if (this.transporteIds.length==0 || this.transporteIds.indexOf(id)==-1) {
         this.transporteIds.push(id);
+        document.getElementById("exprtTransport")?.removeAttribute("disabled")
         // if (this.toggleExport==false) {
         //   this.toggleExport=!this.toggleExport;
         // }
       }else{
         this.transporteIds.splice(this.transporteIds.indexOf(id),1);
-        // if(this.transporteIds.length==0){
-        //   this.toggleExport=false;
-        // }
+        if(this.transporteIds.length==0){
+          document.getElementById("exprtTransport")?.setAttribute("disabled","")
+          // this.toggleExport=false;
+        }
       }
       // console.log(this.transporteIds); // Eliminar despues de terminar con las pruebas
     }
@@ -767,4 +771,50 @@ export class ApiComponent implements OnInit {
     this.pagina=0;
     this.toggleBuscar=0;
   }
+
+  exprtFinalizada(){
+    let caja=document.createElement("div")
+    caja.setAttribute("id","exptrMsgBox")
+    caja.style.position="absolute";
+    caja.style.top="20px";
+    caja.style.right="20px";
+    caja.style.display="block";
+    caja.style.width="200px";
+    caja.style.height="50px";
+    caja.style.backgroundColor= "rgba(19,65,204,.5)";
+    caja.style.textAlign= "center";
+    caja.style.paddingTop="10px";
+    caja.style.borderRadius="15px";
+    let texto=document.createElement("p")
+    texto.textContent="Exportación finalizada"
+    caja.append(texto);
+    document.getElementsByTagName("body")[0].append(caja);
+    setTimeout(this.retirar,3000,caja);
+  }
+
+  exprtFallida(){
+    let caja=document.createElement("div")
+    caja.setAttribute("id","exptrMsgBoxFail")
+    caja.style.position="absolute";
+    caja.style.top="20px";
+    caja.style.right="20px";
+    caja.style.display="block";
+    caja.style.width="200px";
+    caja.style.height="50px";
+    caja.style.backgroundColor= "rgba(204,65,19,.5)";
+    caja.style.textAlign= "center";
+    caja.style.paddingTop="10px";
+    caja.style.borderRadius="15px";
+    let texto=document.createElement("p")
+    texto.textContent="Exportación fallida"
+    caja.append(texto);
+    document.getElementsByTagName("body")[0].append(caja);
+    setTimeout(this.retirar,3000,caja);
+  }
+
+  retirar(caja:any,inter:any){
+    let aux:HTMLElement=caja
+    aux.remove()
+  }
 }
+
